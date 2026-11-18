@@ -2,7 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const { connectDB } = require('./config/database');
 const healthRoutes = require('./routes/health.routes');
+const reportRoutes = require('./routes/report.routes');
+const eventRoutes = require('./routes/event.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +20,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/events', eventRoutes);
 
 // Root route
 app.get('/', (req, res) => {
@@ -45,13 +50,20 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start listening if run directly
+// Start listening only after a successful database connection
 let server;
 if (require.main === module) {
-  server = app.listen(PORT, () => {
-    console.log(`UrbanPulse Server running on http://localhost:${PORT}`);
-    console.log(`Health endpoint available at http://localhost:${PORT}/api/health`);
-  });
+  connectDB()
+    .then(() => {
+      server = app.listen(PORT, () => {
+        console.log(`UrbanPulse Server running on http://localhost:${PORT}`);
+        console.log(`Health endpoint available at http://localhost:${PORT}/api/health`);
+      });
+    })
+    .catch((err) => {
+      console.error('Startup failed:', err.message);
+      process.exit(1);
+    });
 }
 
 module.exports = { app, server };
