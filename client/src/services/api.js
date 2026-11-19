@@ -1,6 +1,6 @@
 /**
  * API service for UrbanPulse frontend
- * Leverages Vite proxy (/api -> http://localhost:5000)
+ * Leverages Vite proxy (/api -> http://127.0.0.1:5000)
  */
 
 /**

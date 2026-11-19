@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createReport } from '../../services/api';
 import './ReportModal.css';
 
@@ -13,16 +13,116 @@ const CIVIC_CATEGORIES = [
 
 /**
  * ReportModal component
- * Allows users to report a civic issue at their current/active map location.
+ *
+ * Allows users to report a civic issue at a chosen location.
+ * Location can be:
+ *   1. Auto-detected via "Use My Current Location" (browser Geolocation API)
+ *   2. Manually selected by clicking the map to drop a pin, then clicking "Use Map Pin"
+ *
+ * Dev override coordinates (isDevOverride: true) are NEVER silently used as a
+ * real user's report location — they appear in the map centering only.
+ *
+ * GeoJSON coordinate order: [longitude, latitude] — preserved in backend payload.
  */
-export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }) {
+export default function ReportModal({ isOpen, onClose, userLocation, mapPinLocation, onSuccess }) {
+  // Form fields
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Pothole');
   const [description, setDescription] = useState('');
+
+  // Submission state
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // Report location chosen by the user { latitude, longitude, source: 'gps'|'map' } | null
+  const [reportLocation, setReportLocation] = useState(null);
+
+  // Geolocation detection state
+  const [geoFetching, setGeoFetching] = useState(false);
+  const [geoError, setGeoError] = useState(null);
+
+  // --- Hooks BEFORE early return (Rules of Hooks) ---
+
+  // Reset / pre-populate on open/close
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset everything when modal closes
+      setTitle('');
+      setCategory('Pothole');
+      setDescription('');
+      setErrorMessage(null);
+      setGeoError(null);
+      setGeoFetching(false);
+      setReportLocation(null);
+      return;
+    }
+
+    // On open: pre-populate from real GPS only — never from dev override
+    setGeoError(null);
+    setGeoFetching(false);
+    if (
+      userLocation &&
+      !userLocation.isDevOverride &&
+      typeof userLocation.latitude === 'number' &&
+      typeof userLocation.longitude === 'number'
+    ) {
+      setReportLocation({
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+        source: 'gps',
+      });
+    } else {
+      setReportLocation(null);
+    }
+    // Intentionally excludes userLocation from deps — only run on open/close
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  // "Use My Current Location" button handler
+  const handleDetectLocation = useCallback(() => {
+    setGeoError(null);
+    setGeoFetching(true);
+
+    if (!navigator.geolocation) {
+      setGeoError('Geolocation is not supported by your browser.');
+      setGeoFetching(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude } }) => {
+        setReportLocation({ latitude, longitude, source: 'gps' });
+        setGeoFetching(false);
+        setGeoError(null);
+      },
+      (err) => {
+        const msgs = {
+          [err.PERMISSION_DENIED]:
+            'Location permission was denied. Allow access in browser settings, or select a map location.',
+          [err.POSITION_UNAVAILABLE]:
+            'Your location is currently unavailable. Try again or select from the map.',
+          [err.TIMEOUT]:
+            'Location request timed out. Please try again or select a map location.',
+        };
+        setGeoError(msgs[err.code] || err.message || 'Unable to detect your location.');
+        setGeoFetching(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  }, []);
+
+  // "Use Map Pin" button handler
+  const handleUseMapPin = useCallback(() => {
+    if (mapPinLocation && typeof mapPinLocation.latitude === 'number') {
+      setReportLocation({ ...mapPinLocation, source: 'map' });
+      setGeoError(null);
+    }
+  }, [mapPinLocation]);
+
+  // --- Early return AFTER all hooks ---
   if (!isOpen) return null;
+
+  const hasMapPin = mapPinLocation && typeof mapPinLocation.latitude === 'number';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,45 +135,47 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
       setErrorMessage('Please provide a title for the issue.');
       return;
     }
-
     if (!category) {
       setErrorMessage('Please select a category.');
       return;
     }
-
     if (!trimmedDescription) {
       setErrorMessage('Please provide a description of the issue.');
       return;
     }
-
-    if (!userLocation || typeof userLocation.longitude !== 'number' || typeof userLocation.latitude !== 'number') {
-      setErrorMessage('Location coordinates are not available yet. Please wait for location to resolve or retry.');
+    if (
+      !reportLocation ||
+      typeof reportLocation.longitude !== 'number' ||
+      typeof reportLocation.latitude !== 'number'
+    ) {
+      setErrorMessage(
+        'Please select a location before submitting. Use "Use My Current Location" or close this dialog, click a spot on the map, then reopen.'
+      );
       return;
     }
 
     setSubmitting(true);
 
     try {
-      // Format GeoJSON coordinates [longitude, latitude]
+      // GeoJSON coordinates: [longitude, latitude]
       const payload = {
         title: trimmedTitle,
         description: trimmedDescription,
         category,
         location: {
           type: 'Point',
-          coordinates: [userLocation.longitude, userLocation.latitude],
+          coordinates: [reportLocation.longitude, reportLocation.latitude],
         },
       };
 
       const savedReport = await createReport(payload);
 
-      // Reset form
+      // Reset form fields (location reset happens in the isOpen useEffect on close)
       setTitle('');
       setCategory('Pothole');
       setDescription('');
       setErrorMessage(null);
 
-      // Trigger success callback
       if (onSuccess) {
         onSuccess(savedReport);
       }
@@ -90,6 +192,11 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
     }
   };
 
+  const handleClearLocation = () => {
+    setReportLocation(null);
+    setGeoError(null);
+  };
+
   return (
     <div
       className="modal-backdrop"
@@ -99,6 +206,7 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
       aria-labelledby="report-modal-title"
     >
       <div className="modal-card">
+        {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
             <span className="modal-icon">⚠</span>
@@ -115,26 +223,107 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
           </button>
         </div>
 
-        {/* Location Context Badge */}
-        <div className="modal-location-badge">
-          <div className="location-badge-icon">📍</div>
-          <div className="location-badge-text">
-            {userLocation ? (
-              <>
-                <span>Location: </span>
-                <strong>
-                  {userLocation.latitude.toFixed(4)}° N, {userLocation.longitude.toFixed(4)}° E
-                </strong>
-                {userLocation.isDevOverride && (
-                  <span className="location-dev-tag">Dev Location</span>
-                )}
-              </>
-            ) : (
-              <span className="location-warning">Location pending. Acquiring coordinates...</span>
+        {/* Location Section */}
+        <div className="modal-location-section">
+          {/* Location status badge */}
+          {reportLocation ? (
+            <div className="modal-location-badge modal-location-badge--set">
+              <span className="location-source-icon">
+                {reportLocation.source === 'gps' ? '📡' : '📍'}
+              </span>
+              <div className="location-badge-details">
+                <span className="location-source-label">
+                  {reportLocation.source === 'gps' ? 'GPS Location' : 'Map Pin Location'}
+                </span>
+                <span>
+                  {reportLocation.latitude.toFixed(5)}° N,{' '}
+                  {reportLocation.longitude.toFixed(5)}° E
+                </span>
+              </div>
+              <button
+                type="button"
+                className="location-clear-btn"
+                onClick={handleClearLocation}
+                disabled={submitting}
+                aria-label="Clear selected location"
+                title="Clear location"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <div className="modal-location-badge modal-location-badge--unset" role="alert">
+              <span>⚠ No location selected — please choose a location below.</span>
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div className="location-actions">
+            <button
+              type="button"
+              className="btn-detect-location"
+              onClick={handleDetectLocation}
+              disabled={submitting || geoFetching}
+              title="Detect my current GPS location"
+            >
+              {geoFetching ? (
+                <>
+                  <span className="spinner-sm btn-detect-icon"></span>
+                  Detecting...
+                </>
+              ) : (
+                <>
+                  <span className="btn-detect-icon">📡</span>
+                  Use My Current Location
+                </>
+              )}
+            </button>
+
+            {hasMapPin && (
+              <button
+                type="button"
+                className="btn-use-map-pin"
+                onClick={handleUseMapPin}
+                disabled={submitting}
+                title={`Use map pin at ${mapPinLocation.latitude.toFixed(4)}° N, ${mapPinLocation.longitude.toFixed(4)}° E`}
+              >
+                <span>📍</span>
+                Use Map Pin
+              </button>
             )}
           </div>
+
+          {/* Map pin hint */}
+          {!reportLocation && !hasMapPin && (
+            <p className="location-map-hint">
+              💡 Close this dialog, click anywhere on the map to drop a pin, then reopen.
+            </p>
+          )}
+          {!reportLocation && hasMapPin && (
+            <p className="location-map-hint location-map-hint--available">
+              📍 Map pin ready at {mapPinLocation.latitude.toFixed(4)}° N,{' '}
+              {mapPinLocation.longitude.toFixed(4)}° E — click &quot;Use Map Pin&quot; above.
+            </p>
+          )}
+
+          {/* Geolocation error */}
+          {geoError && (
+            <div className="location-geo-error" role="alert">
+              <span>⚠</span>
+              <span>{geoError}</span>
+            </div>
+          )}
+
+          {/* Dev override notice */}
+          {userLocation?.isDevOverride && (
+            <p className="location-dev-notice">
+              ⚙ Dev location override is active (map centering only). Use the button above to
+              detect your real GPS location.
+            </p>
+          )}
         </div>
 
+        {/* Error Banner */}
         {errorMessage && (
           <div className="modal-error-banner" role="alert">
             <span className="error-icon">✕</span>
@@ -142,6 +331,7 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
           </div>
         )}
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-group">
             <label htmlFor="report-title" className="form-label">
@@ -209,7 +399,8 @@ export default function ReportModal({ isOpen, onClose, userLocation, onSuccess }
             <button
               type="submit"
               className="btn-submit"
-              disabled={submitting || !userLocation}
+              disabled={submitting || !reportLocation}
+              title={!reportLocation ? 'Select a location first' : undefined}
             >
               {submitting ? (
                 <>

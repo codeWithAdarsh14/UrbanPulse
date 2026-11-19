@@ -1,6 +1,3 @@
-/**
- * Leaflet icon configurations and custom markers for UrbanPulse
- */
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -14,6 +11,28 @@ L.Icon.Default.mergeOptions({
   iconUrl: icon,
   iconRetinaUrl: icon2x,
   shadowUrl: shadow,
+});
+
+/**
+ * Map Location Selection Pin
+ * Teal/green teardrop pin shown when the user clicks the map to pick a report location.
+ */
+export const mapPinIcon = L.divIcon({
+  className: 'urban-marker-wrapper map-pin-wrapper',
+  html: `
+    <div class="pin-marker map-selection-pin" title="Selected report location">
+      <div class="pin-head map-selection-pin-head">
+        <svg viewBox="0 0 24 24" class="pin-svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+      </div>
+      <div class="pin-point map-selection-pin-point"></div>
+    </div>
+  `,
+  iconSize: [32, 42],
+  iconAnchor: [16, 42],
+  popupAnchor: [0, -40],
 });
 
 /**
