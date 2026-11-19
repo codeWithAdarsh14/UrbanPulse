@@ -55,7 +55,7 @@ let server;
 if (require.main === module) {
   connectDB()
     .then(() => {
-      server = app.listen(PORT, () => {
+      server = app.listen(PORT, '127.0.0.1', () => {
         console.log(`UrbanPulse Server running on http://localhost:${PORT}`);
         console.log(`Health endpoint available at http://localhost:${PORT}/api/health`);
       });

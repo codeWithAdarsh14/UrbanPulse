@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents } from 'react-leaflet';
 import { fetchNearbyReports, fetchNearbyEvents } from '../../services/api';
 import {
   userLocationIcon,
@@ -7,6 +7,7 @@ import {
   eventIcon,
   createGroupedReportIcon,
   createSpiderReportIcon,
+  mapPinIcon,
 } from './leaflet-icons';
 import { DEV_LOCATION, ENABLE_DEV_LOCATION_OVERRIDE } from '../../config/devLocation';
 import { groupReportsByProximity, calculateSpiderOffsets } from '../../utils/geoUtils';
@@ -26,6 +27,23 @@ function RecenterMap({ center, zoom = 14 }) {
       map.setView(center, zoom);
     }
   }, [center, zoom, map]);
+  return null;
+}
+
+/**
+ * Helper component to capture map clicks and update manual pin location
+ */
+function MapClickHandler({ onMapClick }) {
+  useMapEvents({
+    click(e) {
+      if (e?.latlng) {
+        onMapClick({
+          latitude: e.latlng.lat,
+          longitude: e.latlng.lng,
+        });
+      }
+    },
+  });
   return null;
 }
 
@@ -67,6 +85,9 @@ export default function MapView({
   const [userLocation, setUserLocation] = useState(null);
   const [geoLoading, setGeoLoading] = useState(true);
   const [geoError, setGeoError] = useState(null);
+
+  // Manual map-pin location state: { latitude: number, longitude: number } | null
+  const [mapPinLocation, setMapPinLocation] = useState(null);
 
   // Data states
   const [reports, setReports] = useState([]);
@@ -190,6 +211,7 @@ export default function MapView({
    */
   const handleReportSuccess = useCallback(() => {
     setIsReportModalOpen(false);
+    setMapPinLocation(null);
     setSuccessToast('Issue reported successfully! Your report has been added to the map.');
     // Re-fetch nearby reports to display the newly submitted issue
     loadNearbyData();
@@ -390,6 +412,7 @@ export default function MapView({
             scrollWheelZoom={true}
           >
             <RecenterMap center={[userLocation.latitude, userLocation.longitude]} zoom={14} />
+            <MapClickHandler onMapClick={setMapPinLocation} />
 
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -422,6 +445,48 @@ export default function MapView({
                 </div>
               </Popup>
             </Marker>
+
+            {/* Selected Map Pin Marker */}
+            {mapPinLocation && (
+              <Marker
+                position={[mapPinLocation.latitude, mapPinLocation.longitude]}
+                icon={mapPinIcon}
+              >
+                <Popup>
+                  <div className="popup-container">
+                    <div className="popup-header">
+                      <h4 className="popup-title">Selected Location</h4>
+                      <span className="popup-badge badge-map-pin">Map Pin</span>
+                    </div>
+                    <p className="popup-desc">
+                      Selected location for reporting an issue.
+                    </p>
+                    <div className="popup-footer">
+                      Lat: {mapPinLocation.latitude.toFixed(5)}, Lng: {mapPinLocation.longitude.toFixed(5)}
+                    </div>
+                    <div style={{ marginTop: '8px', display: 'flex', gap: '6px' }}>
+                      <button
+                        type="button"
+                        className="btn-report-issue"
+                        style={{ padding: '4px 10px', fontSize: '12px', flex: 1, justifyContent: 'center' }}
+                        onClick={() => setIsReportModalOpen(true)}
+                      >
+                        Report Here
+                      </button>
+                      <button
+                        type="button"
+                        className="refresh-btn"
+                        style={{ padding: '4px 8px', fontSize: '12px' }}
+                        onClick={() => setMapPinLocation(null)}
+                        title="Remove pin"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </Popup>
+              </Marker>
+            )}
 
             {/* Problem Report Markers (Grouped & Single) */}
             {reportGroups.map((group) => {
@@ -634,6 +699,7 @@ export default function MapView({
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
         userLocation={userLocation}
+        mapPinLocation={mapPinLocation}
         onSuccess={handleReportSuccess}
       />
     </div>

@@ -90,44 +90,179 @@
   border-color: var(--accent-border);
 }
 
-/* Location Badge inside Modal */
+/* ── Location Section (new geolocation feature) ── */
+.modal-location-section {
+  padding: 14px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Location status badge — base */
 .modal-location-badge {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 16px 24px 0;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(170, 59, 255, 0.08);
-  border: 1px solid rgba(170, 59, 255, 0.25);
   font-size: 13px;
+}
+
+/* Set state: green tint */
+.modal-location-badge--set {
+  background: rgba(16, 185, 129, 0.09);
+  border: 1px solid rgba(16, 185, 129, 0.3);
   color: var(--text-h);
 }
 
-.location-badge-icon {
-  font-size: 16px;
+/* Unset state: red warning */
+.modal-location-badge--unset {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  color: #dc2626;
+  font-size: 13px;
 }
 
-.location-badge-text {
+.location-source-icon {
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.location-badge-details {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.location-source-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  opacity: 0.65;
+}
+
+.location-clear-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: opacity 0.18s;
+  flex-shrink: 0;
+}
+
+.location-clear-btn:hover {
+  opacity: 1;
+}
+
+/* Location action buttons row */
+.location-actions {
+  display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.location-dev-tag {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: #f59e0b;
-  color: #000;
+/* "Use My Current Location" button */
+.btn-detect-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, opacity 0.2s;
+  font-family: inherit;
 }
 
-.location-warning {
-  color: #dc2626;
+.btn-detect-location:hover:not(:disabled) {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-detect-location:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-detect-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* "Use Map Pin" button */
+.btn-use-map-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-size: 13px;
   font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  font-family: inherit;
+}
+
+.btn-use-map-pin:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.22);
+}
+
+.btn-use-map-pin:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Map pin hint text */
+.location-map-hint {
+  font-size: 12px;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.location-map-hint--available {
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* Geolocation error message */
+.location-geo-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #ef4444;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Dev override notice */
+.location-dev-notice {
+  font-size: 11px;
+  color: #d97706;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* Error Banner */
@@ -276,8 +411,11 @@
   .modal-header {
     padding: 14px 18px;
   }
-  .modal-location-badge {
-    margin: 12px 18px 0;
+  .modal-location-section {
+    padding: 10px 18px 0;
+  }
+  .location-actions {
+    flex-direction: column;
   }
   .modal-error-banner {
     margin: 12px 18px 0;
