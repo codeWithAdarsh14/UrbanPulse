@@ -258,6 +258,52 @@ export default function MultiStepReportModal({
     setGeoError(null);
   }, []);
 
+  // Process and downscale images via canvas to ensure fast uploads and prevent payload limit errors
+  const processImageFile = useCallback((file) => {
+    return new Promise((resolve) => {
+      if (file.size > 15 * 1024 * 1024) {
+        setStepError('File size too large (max 15MB).');
+        resolve(null);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX_DIM = 1600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_DIM || height > MAX_DIM) {
+            if (width > height) {
+              height = Math.round((height * MAX_DIM) / width);
+              width = MAX_DIM;
+            } else {
+              width = Math.round((width * MAX_DIM) / height);
+              height = MAX_DIM;
+            }
+          }
+
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          } catch {
+            resolve(e.target.result);
+          }
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
+  }, []);
+
   // File processing for Step 2
   const handleFiles = useCallback((fileList) => {
     if (!fileList || !fileList.length) return;
@@ -277,20 +323,11 @@ export default function MultiStepReportModal({
 
     const filesToRead = imageFiles.slice(0, availableSlots);
 
-    Promise.all(
-      filesToRead.map((file) => {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.onerror = () => resolve(null);
-          reader.readAsDataURL(file);
-        });
-      })
-    ).then((dataUrls) => {
+    Promise.all(filesToRead.map((file) => processImageFile(file))).then((dataUrls) => {
       const validUrls = dataUrls.filter(Boolean);
       setImages((prev) => [...prev, ...validUrls].slice(0, 3));
     });
-  }, [images.length]);
+  }, [images.length, processImageFile]);
 
   const handleRemoveImage = useCallback((index) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
