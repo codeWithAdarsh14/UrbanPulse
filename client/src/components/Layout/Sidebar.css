@@ -1,0 +1,303 @@
+/* ==========================================================================
+   UrbanPulse 2.0 - Sidebar Styles
+   ========================================================================== */
+
+.up-sidebar {
+  width: 235px;
+  background: #0C1024;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 100vh;
+  height: 100%;
+  position: relative;
+  z-index: 50;
+  user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.up-sidebar.collapsed {
+  width: 64px;
+}
+
+/* ── Logo Area ── */
+.up-sidebar-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+  min-height: 72px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  box-sizing: border-box;
+}
+
+.up-sidebar.collapsed .up-sidebar-logo-area {
+  justify-content: center;
+  padding: 20px 8px;
+}
+
+.up-sidebar-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.up-sidebar-brand-text {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.up-sidebar-brand-name {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #F8FAFC;
+  line-height: 1.2;
+}
+
+.up-sidebar-brand-tagline {
+  font-size: 10px;
+  font-weight: 500;
+  color: #94A3B8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── Nav List ── */
+.up-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 12px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.up-sidebar.collapsed .up-sidebar-nav {
+  padding: 16px 8px;
+  align-items: center;
+}
+
+/* Nav Item */
+.up-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #94A3B8;
+  background: transparent;
+  border: 1px solid transparent;
+  border-left: 2px solid transparent;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.up-sidebar.collapsed .up-nav-item {
+  padding: 10px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-left: 2px solid transparent;
+}
+
+.up-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.up-nav-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+/* Hover (not active) */
+.up-nav-item:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.04);
+  color: #F8FAFC;
+}
+
+.up-nav-item:hover:not(.active) .up-nav-icon {
+  transform: translateX(1px);
+}
+
+/* Active Item */
+.up-nav-item.active {
+  background: linear-gradient(135deg, rgba(120, 56, 245, 0.2), rgba(168, 85, 247, 0.1));
+  border-left: 2px solid #7838F5;
+  color: #F8FAFC;
+  box-shadow: 0 0 20px rgba(120, 56, 245, 0.15) inset;
+  font-weight: 600;
+}
+
+.up-sidebar.collapsed .up-nav-item.active {
+  border-left: 2px solid #7838F5;
+}
+
+.up-nav-item.active .up-nav-icon {
+  color: #A855F7;
+}
+
+/* ── Bottom Section ── */
+.up-sidebar-bottom {
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.up-sidebar.collapsed .up-sidebar-bottom {
+  padding: 12px 6px;
+  align-items: center;
+}
+
+/* Promo Card */
+.up-sidebar-promo-card {
+  background: linear-gradient(135deg, rgba(120, 56, 245, 0.22), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.up-sidebar-promo-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.up-promo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.up-promo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.up-promo-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #F8FAFC;
+  letter-spacing: -0.01em;
+}
+
+.up-promo-desc {
+  font-size: 11px;
+  color: #94A3B8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Divider */
+.up-sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  width: 100%;
+}
+
+/* User & Controls Row */
+.up-sidebar-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.up-sidebar.collapsed .up-sidebar-user-row {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.up-sidebar-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7838F5, #A855F7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(120, 56, 245, 0.35);
+}
+
+.up-sidebar-user-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.up-sidebar-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #F8FAFC;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.up-sidebar-user-badge {
+  font-size: 10px;
+  color: #22D3EE;
+  font-weight: 500;
+}
+
+.up-sidebar-action-btn,
+.up-sidebar-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #94A3B8;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.up-sidebar-action-btn:hover,
+.up-sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #F8FAFC;
+}
+
+.up-collapse-chevron {
+  transition: transform 0.3s ease;
+}
+
+.up-collapse-chevron.rotated {
+  transform: rotate(180deg);
+}

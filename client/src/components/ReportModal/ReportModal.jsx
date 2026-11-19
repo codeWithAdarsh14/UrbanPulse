@@ -209,7 +209,9 @@ export default function ReportModal({ isOpen, onClose, userLocation, mapPinLocat
         {/* Header */}
         <div className="modal-header">
           <div className="modal-title-group">
-            <span className="modal-icon">⚠</span>
+            <div className="modal-icon-wrap">
+              <span className="modal-icon">⚠</span>
+            </div>
             <h2 id="report-modal-title" className="modal-title">Report an Issue</h2>
           </div>
           <button
