@@ -1,6 +1,5 @@
 /**
- * API service for UrbanPulse frontend
- * Leverages Vite proxy (/api -> http://127.0.0.1:5000)
+ * API service for UrbanPulse frontend — Vite proxy /api -> http://127.0.0.1:5000
  */
 
 /**
@@ -58,4 +57,36 @@ export async function createReport(reportData) {
   }
 
   return result.data;
+}
+
+/**
+ * Fetch all reports (paginated)
+ * @param {number} [page=1]
+ * @param {number} [limit=50]
+ */
+export async function fetchAllReports(page = 1, limit = 50) {
+  const url = `/api/reports?page=${page}&limit=${limit}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Failed to fetch reports (${response.status})`);
+  }
+  const result = await response.json();
+  return { data: result.data || [], pagination: result.pagination || {} };
+}
+
+/**
+ * Fetch all events (paginated)
+ * @param {number} [page=1]
+ * @param {number} [limit=20]
+ */
+export async function fetchAllEvents(page = 1, limit = 20) {
+  const url = `/api/events?page=${page}&limit=${limit}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Failed to fetch events (${response.status})`);
+  }
+  const result = await response.json();
+  return { data: result.data || [], pagination: result.pagination || {} };
 }
