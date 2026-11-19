@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import MapView from './components/Map/MapView';
 import MultiStepReportModal from './components/ReportModal/MultiStepReportModal';
 import Sidebar from './components/Layout/Sidebar';
 import TopBar from './components/Layout/TopBar';
 import DashboardView from './components/Dashboard/DashboardView';
+import { fetchLiveCityAQI } from './services/aqiService';
 import './App.css';
 
 /**
@@ -20,6 +21,9 @@ export default function App() {
   // Report modal state
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
+  // Active geographic location name (e.g. 'GLA University, Mathura' or 'Mathura, UP')
+  const [activeLocationName, setActiveLocationName] = useState('Mathura, UP');
+
   // Sidebar collapse toggle state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -28,6 +32,49 @@ export default function App() {
 
   // Toast notifications array: { id, message, type: 'success' | 'error' | 'info' }
   const [toasts, setToasts] = useState([]);
+
+  // Dynamic Air Quality Index telemetry for active location
+  const [aqiData, setAqiData] = useState({
+    aqi: 179,
+    category: 'Moderate',
+    color: '#F59E0B',
+    gradient: 'linear-gradient(90deg, #10B981, #F59E0B)',
+    barWidth: '45%',
+    stationName: 'Mathura, UP',
+    loading: false,
+    status: 'success',
+  });
+
+  // Fetch live AQI whenever activeLocationName changes and refresh every 10 minutes
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function updateAQI() {
+      setAqiData((prev) => ({ ...prev, loading: true }));
+      try {
+        const liveAQI = await fetchLiveCityAQI(activeLocationName, controller.signal);
+        if (isMounted) {
+          setAqiData({ ...liveAQI, loading: false });
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError' && isMounted) {
+          setAqiData((prev) => ({ ...prev, loading: false }));
+        }
+      }
+    }
+
+    updateAQI();
+
+    // Periodic refresh every 10 minutes
+    const interval = setInterval(updateAQI, 10 * 60 * 1000);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+      clearInterval(interval);
+    };
+  }, [activeLocationName]);
 
   /**
    * Helper to trigger transient toasts
@@ -115,6 +162,8 @@ export default function App() {
             <MapView
               isReportModalOpen={isReportModalOpen}
               setIsReportModalOpen={setIsReportModalOpen}
+              activeLocationName={activeLocationName}
+              onLocationNameChange={setActiveLocationName}
             />
           )}
 
@@ -279,14 +328,31 @@ export default function App() {
           <div className="up-rp-aqi-card">
             <div className="up-rp-aqi-header">
               <span>Air Quality Index</span>
-              <span className="up-rp-aqi-badge">Moderate · 112</span>
+              <span
+                className="up-rp-aqi-badge"
+                style={{ color: aqiData.color }}
+                title={aqiData.loading ? 'Updating sensor telemetry...' : undefined}
+              >
+                {aqiData.loading
+                  ? 'Updating…'
+                  : aqiData.aqi !== null
+                  ? `${aqiData.category} · ${aqiData.aqi}`
+                  : aqiData.category}
+              </span>
             </div>
             <div className="up-rp-aqi-bar">
-              <div className="up-rp-aqi-fill" style={{ width: '48%' }}></div>
+              <div
+                className="up-rp-aqi-fill"
+                style={{
+                  width: aqiData.barWidth,
+                  background: aqiData.gradient,
+                  transition: 'width 0.4s ease, background 0.4s ease',
+                }}
+              ></div>
             </div>
             <div className="up-rp-aqi-footer">
-              <span>Mathura Cantt Station</span>
-              <span>Live Telemetry</span>
+              <span title={aqiData.stationName}>{aqiData.stationName}</span>
+              <span>{aqiData.status === 'unavailable' ? 'Data Offline' : 'Live Telemetry'}</span>
             </div>
           </div>
         </div>
