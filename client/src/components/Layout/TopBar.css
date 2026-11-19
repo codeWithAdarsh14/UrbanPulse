@@ -1,0 +1,218 @@
+/* ==========================================================================
+   UrbanPulse 2.0 - TopBar Styles
+   ========================================================================== */
+
+.up-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(12, 16, 36, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* ── Search Wrap ── */
+.up-search-wrap {
+  flex: 1;
+  max-width: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.up-search-icon {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.up-search-wrap:focus-within .up-search-icon {
+  color: #A855F7;
+}
+
+.up-search-input {
+  width: 100%;
+  background: rgba(23, 29, 53, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 9px 38px 9px 40px;
+  color: #F8FAFC;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.up-search-input::placeholder {
+  color: #64748B;
+}
+
+.up-search-input:focus {
+  background: rgba(23, 29, 53, 0.95);
+  border-color: rgba(120, 56, 245, 0.5);
+  box-shadow: 0 0 0 3px rgba(120, 56, 245, 0.1);
+}
+
+.up-search-clear-btn {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+
+.up-search-clear-btn:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── TopBar Right ── */
+.up-topbar-right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Location Pill */
+.up-location-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: rgba(23, 29, 53, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #F8FAFC;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: default;
+  user-select: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.up-location-pill:hover {
+  background: rgba(23, 29, 53, 0.9);
+  border-color: rgba(34, 211, 238, 0.3);
+}
+
+.up-location-text {
+  letter-spacing: -0.01em;
+}
+
+/* Notification Bell */
+.up-notification-bell {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(23, 29, 53, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  color: #94A3B8;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.up-notification-bell:hover {
+  background: rgba(23, 29, 53, 0.95);
+  color: #F8FAFC;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Notification Dot */
+.up-notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  background: #EF4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.up-notification-ping {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #EF4444;
+  opacity: 0.75;
+  animation: up-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes up-ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* User Avatar */
+.up-topbar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7838F5, #A855F7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 14px rgba(120, 56, 245, 0.35);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.up-topbar-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .up-topbar {
+    padding: 10px 14px;
+  }
+  .up-location-pill {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .up-search-input {
+    font-size: 13px;
+    padding-left: 36px;
+  }
+}
