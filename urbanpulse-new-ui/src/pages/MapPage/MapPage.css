@@ -1,0 +1,76 @@
+/* Map Page Styles */
+.up-map-page {
+  height: calc(100vh - 72px);
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  background: var(--up-bg-deep);
+}
+
+.up-map-sidebar {
+  width: 380px;
+  background: var(--up-card);
+  border-right: 1px solid var(--up-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 500;
+  overflow: hidden;
+}
+
+.up-map-sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--up-border);
+}
+
+.up-map-sidebar-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFF;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.up-map-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.up-map-item-card {
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
+  border-radius: var(--up-radius-md);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.up-map-item-card:hover {
+  border-color: var(--up-purple-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.up-map-viewport-full {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+@media (max-width: 800px) {
+  .up-map-page {
+    flex-direction: column-reverse;
+  }
+  .up-map-sidebar {
+    width: 100%;
+    height: 40vh;
+  }
+  .up-map-viewport-full {
+    height: 60vh;
+  }
+}
