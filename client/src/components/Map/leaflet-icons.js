@@ -147,3 +147,25 @@ export const eventIcon = L.divIcon({
   iconAnchor: [16, 42],
   popupAnchor: [0, -40],
 });
+
+/**
+ * Campus Landmark / Facility Icon
+ * Distinctive gold-indigo pin for university buildings, libraries, and gates
+ */
+export const campusIcon = L.divIcon({
+  className: 'urban-marker-wrapper campus-marker-wrapper',
+  html: `
+    <div class="pin-marker campus-pin" title="Campus Landmark">
+      <div class="pin-head" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);">
+        <svg viewBox="0 0 24 24" class="pin-svg" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+        </svg>
+      </div>
+      <div class="pin-point" style="border-top-color: #D97706;"></div>
+    </div>
+  `,
+  iconSize: [30, 40],
+  iconAnchor: [15, 40],
+  popupAnchor: [0, -38],
+});
