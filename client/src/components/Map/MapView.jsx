@@ -5,9 +5,9 @@ import {
   userLocationIcon,
   reportIcon,
   eventIcon,
+  mapPinIcon,
   createGroupedReportIcon,
   createSpiderReportIcon,
-  mapPinIcon,
 } from './leaflet-icons';
 import { DEV_LOCATION, ENABLE_DEV_LOCATION_OVERRIDE } from '../../config/devLocation';
 import { groupReportsByProximity, calculateSpiderOffsets } from '../../utils/geoUtils';
@@ -17,9 +17,7 @@ import './MapView.css';
 
 const DEFAULT_RADIUS_METRES = 5000;
 
-/**
- * Helper component to re-center Leaflet map when coordinates change
- */
+/** Re-centers the Leaflet map when coordinates change */
 function RecenterMap({ center, zoom = 14 }) {
   const map = useMap();
   useEffect(() => {
@@ -30,104 +28,156 @@ function RecenterMap({ center, zoom = 14 }) {
   return null;
 }
 
-/**
- * Helper component to capture map clicks and update manual pin location
- */
+/** Listens for map clicks and reports lat/lng */
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click(e) {
-      if (e?.latlng) {
-        onMapClick({
-          latitude: e.latlng.lat,
-          longitude: e.latlng.lng,
-        });
-      }
+      onMapClick({ latitude: e.latlng.lat, longitude: e.latlng.lng });
     },
   });
   return null;
 }
 
-/**
- * Format date string safely
- */
+/** Format date string safely */
 function formatDate(dateStr) {
   if (!dateStr) return '';
   try {
     const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return isNaN(d.getTime())
+      ? dateStr
+      : d.toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
   } catch {
     return dateStr;
   }
 }
 
+/** Stats strip component */
+function StatsStrip({ reports, events }) {
+  const active   = reports.filter(r => (r.status || 'active') === 'active').length;
+  const resolved = reports.filter(r => r.status === 'resolved').length;
+
+  return (
+    <div className="map-stats-strip">
+      <div className="stat-card">
+        <div className="stat-card__icon stat-card__icon--violet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <div className="stat-card__body">
+          <span className="stat-card__value">{reports.length}</span>
+          <span className="stat-card__label">Total Reports</span>
+        </div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-card__icon stat-card__icon--red">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div className="stat-card__body">
+          <span className="stat-card__value">{active}</span>
+          <span className="stat-card__label">Active Issues</span>
+        </div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-card__icon stat-card__icon--green">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div className="stat-card__body">
+          <span className="stat-card__value">{resolved}</span>
+          <span className="stat-card__label">Resolved</span>
+        </div>
+      </div>
+
+      <div className="stat-card">
+        <div className="stat-card__icon stat-card__icon--indigo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div className="stat-card__body">
+          <span className="stat-card__value">{events.length}</span>
+          <span className="stat-card__label">Community Events</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
- * Reusable MapView Component for UrbanPulse
+ * MapView — primary map component for UrbanPulse
  */
 export default function MapView({
   isReportModalOpen: controlledIsOpen,
   setIsReportModalOpen: setControlledIsOpen,
 }) {
-  // Modal state (controlled or uncontrolled fallback)
+  // Modal state (controlled or uncontrolled)
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isReportModalOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
   const setIsReportModalOpen = setControlledIsOpen || setInternalIsOpen;
 
-  // Feedback toast state
-  const [successToast, setSuccessToast] = useState(null);
-
-  // Geolocation states
-  const [userLocation, setUserLocation] = useState(null);
-  const [geoLoading, setGeoLoading] = useState(true);
-  const [geoError, setGeoError] = useState(null);
-
-  // Manual map-pin location state: { latitude: number, longitude: number } | null
+  // Map pin (clicked on map)
   const [mapPinLocation, setMapPinLocation] = useState(null);
 
-  // Data states
-  const [reports, setReports] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [dataLoading, setDataLoading] = useState(false);
-  const [dataError, setDataError] = useState(null);
+  // Toast
+  const [successToast, setSuccessToast] = useState(null);
 
-  // Filter state: 'all' | 'reports' | 'events'
+  // Geolocation
+  const [userLocation, setUserLocation] = useState(null);
+  const [geoLoading, setGeoLoading] = useState(true);
+  const [geoError, setGeoError]   = useState(null);
+
+  // Data
+  const [reports, setReports]       = useState([]);
+  const [events, setEvents]         = useState([]);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataError, setDataError]   = useState(null);
+
+  // Filter: 'all' | 'reports' | 'events'
   const [activeFilter, setActiveFilter] = useState('all');
 
-  // Spiderfied groups map: { [groupId]: boolean }
+  // Spiderfied groups
   const [spiderfiedGroups, setSpiderfiedGroups] = useState({});
 
   const toggleSpiderfy = useCallback((groupId) => {
-    setSpiderfiedGroups((prev) => ({
-      ...prev,
-      [groupId]: !prev[groupId],
-    }));
+    setSpiderfiedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }));
   }, []);
 
-  /**
-   * Request user location.
-   * If the development override is enabled, use DEV_LOCATION coordinates.
-   * Otherwise, execute standard browser geolocation.
-   */
+  /* ── Map click handler ── */
+  const handleMapClick = useCallback((loc) => {
+    setMapPinLocation(loc);
+  }, []);
+
+  /* ── Geolocation ── */
   const requestLocation = useCallback(() => {
-    // Development-only location override
     if (ENABLE_DEV_LOCATION_OVERRIDE) {
       queueMicrotask(() => {
-        setUserLocation({
-          latitude: DEV_LOCATION.latitude,
-          longitude: DEV_LOCATION.longitude,
-          isDevOverride: true,
-        });
+        setUserLocation({ latitude: DEV_LOCATION.latitude, longitude: DEV_LOCATION.longitude, isDevOverride: true });
         setGeoLoading(false);
         setGeoError(null);
       });
       return;
     }
-
     if (!navigator.geolocation) {
       queueMicrotask(() => {
         setGeoError('Geolocation is not supported by your browser.');
@@ -135,10 +185,8 @@ export default function MapView({
       });
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
+      ({ coords: { latitude, longitude } }) => {
         setUserLocation({ latitude, longitude });
         setGeoLoading(false);
         setGeoError(null);
@@ -157,16 +205,11 @@ export default function MapView({
             break;
           default:
             errorMsg = error.message || errorMsg;
-            break;
         }
         setGeoError(errorMsg);
         setGeoLoading(false);
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 30000,
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
     );
   }, []);
 
@@ -176,27 +219,19 @@ export default function MapView({
     requestLocation();
   };
 
-  // Request location on mount
-  useEffect(() => {
-    requestLocation();
-  }, [requestLocation]);
+  useEffect(() => { requestLocation(); }, [requestLocation]);
 
-  /**
-   * Fetch nearby reports and events
-   */
+  /* ── Data loading ── */
   const loadNearbyData = useCallback(async (location) => {
     const loc = location || userLocation;
     if (!loc) return;
-
     setDataLoading(true);
     setDataError(null);
-
     try {
       const [reportsData, eventsData] = await Promise.all([
         fetchNearbyReports(loc.longitude, loc.latitude, DEFAULT_RADIUS_METRES),
         fetchNearbyEvents(loc.longitude, loc.latitude, DEFAULT_RADIUS_METRES),
       ]);
-
       setReports(reportsData);
       setEvents(eventsData);
     } catch (err) {
@@ -206,76 +241,59 @@ export default function MapView({
     }
   }, [userLocation]);
 
-  /**
-   * Handle successful report creation
-   */
+  /* ── Report success ── */
   const handleReportSuccess = useCallback(() => {
     setIsReportModalOpen(false);
     setMapPinLocation(null);
     setSuccessToast('Issue reported successfully! Your report has been added to the map.');
-    // Re-fetch nearby reports to display the newly submitted issue
     loadNearbyData();
   }, [setIsReportModalOpen, loadNearbyData]);
 
-  // Auto-dismiss success toast after 5 seconds
+  /* ── Toast auto-dismiss ── */
   useEffect(() => {
     if (!successToast) return;
-    const timer = setTimeout(() => {
-      setSuccessToast(null);
-    }, 5000);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setSuccessToast(null), 5000);
+    return () => clearTimeout(t);
   }, [successToast]);
 
+  /* ── Load data when location becomes available ── */
   useEffect(() => {
     if (!userLocation) return;
-    let isMounted = true;
+    let mounted = true;
+    setDataLoading(true);
+    setDataError(null);
 
     async function fetchData() {
-      setDataLoading(true);
-      setDataError(null);
-
       try {
         const [reportsData, eventsData] = await Promise.all([
           fetchNearbyReports(userLocation.longitude, userLocation.latitude, DEFAULT_RADIUS_METRES),
           fetchNearbyEvents(userLocation.longitude, userLocation.latitude, DEFAULT_RADIUS_METRES),
         ]);
-
-        if (isMounted) {
-          setReports(reportsData);
-          setEvents(eventsData);
-        }
+        if (mounted) { setReports(reportsData); setEvents(eventsData); }
       } catch (err) {
-        if (isMounted) {
-          setDataError(err.message || 'Failed to load nearby data.');
-        }
+        if (mounted) setDataError(err.message || 'Failed to load nearby data.');
       } finally {
-        if (isMounted) {
-          setDataLoading(false);
-        }
+        if (mounted) setDataLoading(false);
       }
     }
-
     fetchData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { mounted = false; };
   }, [userLocation]);
 
-  // Filtered lists
+  /* ── Filtered data ── */
   const showReports = activeFilter === 'all' || activeFilter === 'reports';
-  const showEvents = activeFilter === 'all' || activeFilter === 'events';
-
+  const showEvents  = activeFilter === 'all' || activeFilter === 'events';
   const visibleReports = showReports ? reports : [];
-  const visibleEvents = showEvents ? events : [];
-  const totalVisible = visibleReports.length + visibleEvents.length;
-
-  // Group overlapping and nearby reports (threshold = 20m)
-  const reportGroups = groupReportsByProximity(visibleReports, 20);
+  const visibleEvents  = showEvents  ? events  : [];
+  const totalVisible   = visibleReports.length + visibleEvents.length;
+  const reportGroups   = groupReportsByProximity(visibleReports, 20);
 
   return (
     <div className="map-wrapper">
-      {/* Controls / Filter Bar */}
+      {/* Stats strip */}
+      <StatsStrip reports={reports} events={events} />
+
+      {/* Controls bar */}
       <div className="map-controls-bar">
         <div className="filter-group">
           <button
@@ -283,7 +301,7 @@ export default function MapView({
             className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
             onClick={() => setActiveFilter('all')}
           >
-            All Items
+            All
             <span className="filter-badge">{reports.length + events.length}</span>
           </button>
           <button
@@ -320,7 +338,9 @@ export default function MapView({
               Dev Location
             </span>
           )}
-          <span>Search Radius: <strong>{(DEFAULT_RADIUS_METRES / 1000).toFixed(0)} km</strong></span>
+          <span style={{ fontSize: '12px' }}>
+            Radius: <strong>5 km</strong>
+          </span>
           <button
             type="button"
             className="refresh-btn"
@@ -328,12 +348,12 @@ export default function MapView({
             disabled={dataLoading || !userLocation}
             title="Refresh nearby items"
           >
-            {dataLoading ? 'Refreshing...' : '↻ Refresh'}
+            {dataLoading ? '…' : '↻'} Refresh
           </button>
         </div>
       </div>
 
-      {/* Success Notification Toast */}
+      {/* Success toast */}
       {successToast && (
         <div className="map-success-toast" role="status">
           <div className="toast-content">
@@ -344,36 +364,37 @@ export default function MapView({
             type="button"
             className="toast-close-btn"
             onClick={() => setSuccessToast(null)}
-            aria-label="Dismiss message"
+            aria-label="Dismiss"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Map Canvas and Overlays */}
+      {/* Map canvas */}
       <div className="map-canvas-container">
-        {/* Geolocation Loading State */}
+        {/* Geolocation loading */}
         {geoLoading && (
           <div className="map-state-overlay">
             <div className="map-state-card">
               <div className="spinner"></div>
-              <h3 className="map-state-title">Locating your position...</h3>
+              <h3 className="map-state-title">Locating your position…</h3>
               <p className="map-state-desc">
-                Please allow browser location access when prompted to see urban reports and community events around you.
+                Please allow browser location access when prompted to see civic reports and
+                community events around you.
               </p>
             </div>
           </div>
         )}
 
-        {/* Geolocation Error / Permission Denied State */}
+        {/* Geolocation error */}
         {!geoLoading && geoError && (
           <div className="map-state-overlay">
             <div className="map-state-card">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={`var(--up-red)`} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
               <h3 className="map-state-title">Location Required</h3>
               <p className="map-state-desc">{geoError}</p>
@@ -384,27 +405,25 @@ export default function MapView({
           </div>
         )}
 
-        {/* Floating status notice for data loading or empty results */}
+        {/* Data loading badge */}
         {!geoLoading && !geoError && dataLoading && (
           <div className="map-floating-badge">
-            <div className="spinner" style={{ width: '14px', height: '14px', borderWidth: '2px' }}></div>
-            Fetching nearby reports & events...
+            <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }}></div>
+            Fetching nearby reports &amp; events…
           </div>
         )}
-
         {!geoLoading && !geoError && !dataLoading && dataError && (
-          <div className="map-floating-badge" style={{ color: '#dc2626' }}>
+          <div className="map-floating-badge" style={{ color: 'var(--up-red)' }}>
             ⚠ {dataError}
           </div>
         )}
-
         {!geoLoading && !geoError && !dataLoading && !dataError && totalVisible === 0 && (
           <div className="map-floating-badge">
             No {activeFilter === 'all' ? 'reports or events' : activeFilter} found within 5 km
           </div>
         )}
 
-        {/* Active Map View */}
+        {/* Leaflet map */}
         {userLocation && (
           <MapContainer
             center={[userLocation.latitude, userLocation.longitude]}
@@ -412,18 +431,15 @@ export default function MapView({
             scrollWheelZoom={true}
           >
             <RecenterMap center={[userLocation.latitude, userLocation.longitude]} zoom={14} />
-            <MapClickHandler onMapClick={setMapPinLocation} />
+            <MapClickHandler onMapClick={handleMapClick} />
 
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {/* User Location Marker */}
-            <Marker
-              position={[userLocation.latitude, userLocation.longitude]}
-              icon={userLocationIcon}
-            >
+            {/* User location marker */}
+            <Marker position={[userLocation.latitude, userLocation.longitude]} icon={userLocationIcon}>
               <Popup>
                 <div className="popup-container">
                   <div className="popup-header">
@@ -431,12 +447,12 @@ export default function MapView({
                       {userLocation.isDevOverride ? 'Development Location' : 'Your Current Location'}
                     </h4>
                     <span className="popup-badge badge-user">
-                      {userLocation.isDevOverride ? 'Dev Mode' : 'You'}
+                      {userLocation.isDevOverride ? 'Dev' : 'You'}
                     </span>
                   </div>
                   <p className="popup-desc">
                     {userLocation.isDevOverride
-                      ? 'Using development location override (77.6737, 27.4924). Showing nearby civic reports and community events within 5 km.'
+                      ? 'Using development location override. Showing nearby civic reports and community events within 5 km.'
                       : 'Showing nearby civic reports and community events within 5 km of this point.'}
                   </p>
                   <div className="popup-footer">
@@ -446,7 +462,7 @@ export default function MapView({
               </Popup>
             </Marker>
 
-            {/* Selected Map Pin Marker */}
+            {/* Map selection pin */}
             {mapPinLocation && (
               <Marker
                 position={[mapPinLocation.latitude, mapPinLocation.longitude]}
@@ -455,47 +471,29 @@ export default function MapView({
                 <Popup>
                   <div className="popup-container">
                     <div className="popup-header">
-                      <h4 className="popup-title">Selected Location</h4>
-                      <span className="popup-badge badge-map-pin">Map Pin</span>
+                      <h4 className="popup-title">Report Location Pin</h4>
+                      <span className="popup-badge" style={{ background: 'var(--up-teal-bg)', color: 'var(--up-teal)', border: '1px solid var(--up-teal-bdr)' }}>
+                        Selected
+                      </span>
                     </div>
                     <p className="popup-desc">
-                      Selected location for reporting an issue.
+                      Click &ldquo;Use Map Pin&rdquo; in the report form to submit at this location.
                     </p>
                     <div className="popup-footer">
                       Lat: {mapPinLocation.latitude.toFixed(5)}, Lng: {mapPinLocation.longitude.toFixed(5)}
-                    </div>
-                    <div style={{ marginTop: '8px', display: 'flex', gap: '6px' }}>
-                      <button
-                        type="button"
-                        className="btn-report-issue"
-                        style={{ padding: '4px 10px', fontSize: '12px', flex: 1, justifyContent: 'center' }}
-                        onClick={() => setIsReportModalOpen(true)}
-                      >
-                        Report Here
-                      </button>
-                      <button
-                        type="button"
-                        className="refresh-btn"
-                        style={{ padding: '4px 8px', fontSize: '12px' }}
-                        onClick={() => setMapPinLocation(null)}
-                        title="Remove pin"
-                      >
-                        Clear
-                      </button>
                     </div>
                   </div>
                 </Popup>
               </Marker>
             )}
 
-            {/* Problem Report Markers (Grouped & Single) */}
+            {/* Report markers */}
             {reportGroups.map((group) => {
               const [lng, lat] = group.coordinates;
-              const isGroup = group.reports.length > 1;
+              const isGroup     = group.reports.length > 1;
               const isSpiderfied = Boolean(spiderfiedGroups[group.id]);
 
               if (!isGroup) {
-                // Single Report
                 const report = group.reports[0];
                 return (
                   <Marker
@@ -509,12 +507,7 @@ export default function MapView({
                           <h4 className="popup-title">{report.title}</h4>
                           <span className="popup-badge badge-report">{report.category}</span>
                         </div>
-
                         <div className="popup-meta">
-                          <div className="meta-row">
-                            <span className="meta-label">Category:</span>
-                            <span>{report.category}</span>
-                          </div>
                           <div className="meta-row">
                             <span className="meta-label">Status:</span>
                             <span className="popup-badge badge-status">{report.status || 'active'}</span>
@@ -526,13 +519,9 @@ export default function MapView({
                             </div>
                           )}
                         </div>
-
                         <p className="popup-desc">{report.description}</p>
-
                         {report.createdAt && (
-                          <div className="popup-footer">
-                            Reported: {formatDate(report.createdAt)}
-                          </div>
+                          <div className="popup-footer">Reported: {formatDate(report.createdAt)}</div>
                         )}
                       </div>
                     </Popup>
@@ -540,17 +529,11 @@ export default function MapView({
                 );
               }
 
-              // Multiple Reports Group (Identical or nearby coordinates)
               if (isSpiderfied) {
                 const spiderOffsets = calculateSpiderOffsets(lat, lng, group.reports.length, 35);
-
                 return (
                   <Fragment key={group.id}>
-                    {/* Center Marker to collapse or view list */}
-                    <Marker
-                      position={[lat, lng]}
-                      icon={createGroupedReportIcon(group.reports.length)}
-                    >
+                    <Marker position={[lat, lng]} icon={createGroupedReportIcon(group.reports.length)}>
                       <Popup minWidth={280} maxWidth={360}>
                         <GroupedReportPopup
                           reports={group.reports}
@@ -560,25 +543,15 @@ export default function MapView({
                         />
                       </Popup>
                     </Marker>
-
-                    {/* Spiderfied legs and offset markers */}
                     {group.reports.map((report, idx) => {
                       const offset = spiderOffsets[idx];
                       return (
                         <Fragment key={`spider-${report._id || idx}`}>
                           <Polyline
                             positions={[[lat, lng], offset]}
-                            pathOptions={{
-                              color: '#dc2626',
-                              dashArray: '4, 4',
-                              weight: 2,
-                              opacity: 0.65,
-                            }}
+                            pathOptions={{ color: '#ef4444', dashArray: '4 4', weight: 2, opacity: 0.6 }}
                           />
-                          <Marker
-                            position={offset}
-                            icon={createSpiderReportIcon(idx + 1)}
-                          >
+                          <Marker position={offset} icon={createSpiderReportIcon(idx + 1)}>
                             <Popup minWidth={240} maxWidth={320}>
                               <div className="popup-container">
                                 <div className="popup-header">
@@ -586,7 +559,6 @@ export default function MapView({
                                   <h4 className="popup-title">{report.title}</h4>
                                   <span className="popup-badge badge-report">{report.category}</span>
                                 </div>
-
                                 <div className="popup-meta">
                                   <div className="meta-row">
                                     <span className="meta-label">Status:</span>
@@ -599,7 +571,6 @@ export default function MapView({
                                     </div>
                                   )}
                                 </div>
-
                                 <p className="popup-desc">{report.description}</p>
                               </div>
                             </Popup>
@@ -611,13 +582,8 @@ export default function MapView({
                 );
               }
 
-              // Normal Grouped Marker (not spiderfied)
               return (
-                <Marker
-                  key={group.id}
-                  position={[lat, lng]}
-                  icon={createGroupedReportIcon(group.reports.length)}
-                >
+                <Marker key={group.id} position={[lat, lng]} icon={createGroupedReportIcon(group.reports.length)}>
                   <Popup minWidth={280} maxWidth={360}>
                     <GroupedReportPopup
                       reports={group.reports}
@@ -630,25 +596,19 @@ export default function MapView({
               );
             })}
 
-            {/* Event Markers */}
+            {/* Event markers */}
             {visibleEvents.map((event) => {
               const coords = event.location?.coordinates;
               if (!coords || coords.length < 2) return null;
               const [lng, lat] = coords;
-
               return (
-                <Marker
-                  key={`event-${event._id}`}
-                  position={[lat, lng]}
-                  icon={eventIcon}
-                >
+                <Marker key={`event-${event._id}`} position={[lat, lng]} icon={eventIcon}>
                   <Popup>
                     <div className="popup-container">
                       <div className="popup-header">
                         <h4 className="popup-title">{event.title}</h4>
                         <span className="popup-badge badge-event">Event</span>
                       </div>
-
                       <div className="popup-meta">
                         <div className="meta-row">
                           <span className="meta-label">Category:</span>
@@ -667,7 +627,6 @@ export default function MapView({
                           <span>{formatDate(event.endDate)}</span>
                         </div>
                       </div>
-
                       <p className="popup-desc">{event.description}</p>
                     </div>
                   </Popup>
@@ -677,7 +636,7 @@ export default function MapView({
           </MapContainer>
         )}
 
-        {/* Legend */}
+        {/* Map legend */}
         <div className="map-legend">
           <div className="legend-item">
             <span className="legend-swatch swatch-user"></span>
@@ -694,7 +653,7 @@ export default function MapView({
         </div>
       </div>
 
-      {/* Report an Issue Modal */}
+      {/* Report Modal */}
       <ReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}
