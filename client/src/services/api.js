@@ -60,6 +60,29 @@ export async function createReport(reportData) {
 }
 
 /**
+ * Create and submit a new community event
+ * @param {Object} eventData - { title, description, category, venue, location, startDate, endDate, image? }
+ * @returns {Promise<Object>} Created event object
+ */
+export async function createEvent(eventData) {
+  const response = await fetch('/api/events', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(eventData),
+  });
+
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(result.message || `Failed to submit event (${response.status})`);
+  }
+
+  return result.data;
+}
+
+/**
  * Fetch all reports (paginated)
  * @param {number} [page=1]
  * @param {number} [limit=50]

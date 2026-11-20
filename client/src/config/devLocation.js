@@ -19,5 +19,6 @@ export const DEV_LOCATION = {
 };
 
 export const ENABLE_DEV_LOCATION_OVERRIDE = Boolean(
-  import.meta.env.DEV && import.meta.env.VITE_ENABLE_DEV_LOCATION !== 'false'
+  import.meta.env.DEV && import.meta.env.VITE_ENABLE_DEV_LOCATION === 'true'
 );
+
