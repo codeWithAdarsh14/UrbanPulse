@@ -1,0 +1,108 @@
+/* How It Works Section */
+.up-hiw-section {
+  padding: 90px 0;
+  position: relative;
+}
+
+.up-hiw-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 56px;
+}
+
+.up-hiw-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin-bottom: 14px;
+}
+
+.up-hiw-desc {
+  font-size: 1.05rem;
+  color: var(--up-text-secondary);
+}
+
+.up-hiw-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  position: relative;
+}
+
+.up-hiw-step-card {
+  background: var(--up-card);
+  border: 1px solid var(--up-border);
+  border-radius: var(--up-radius-xl);
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.28s ease;
+  overflow: hidden;
+}
+
+.up-hiw-step-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 58, 237, 0.45);
+  box-shadow: var(--up-shadow-elevated);
+}
+
+.up-hiw-step-number {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  font-size: 3.5rem;
+  font-weight: 900;
+  font-family: var(--up-font-mono);
+  color: rgba(255, 255, 255, 0.04);
+  line-height: 1;
+}
+
+.up-hiw-icon-box {
+  width: 58px;
+  height: 58px;
+  border-radius: var(--up-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  border: 1px solid var(--up-border);
+}
+
+.up-hiw-icon-box--purple {
+  background: var(--up-purple-soft);
+  color: #C084FC;
+  box-shadow: 0 0 20px var(--up-purple-glow);
+}
+
+.up-hiw-icon-box--cyan {
+  background: var(--up-cyan-soft);
+  color: var(--up-cyan-accent);
+  box-shadow: 0 0 20px var(--up-cyan-glow);
+}
+
+.up-hiw-icon-box--green {
+  background: var(--up-success-soft);
+  color: var(--up-success);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+}
+
+.up-hiw-step-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 12px;
+}
+
+.up-hiw-step-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--up-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .up-hiw-steps {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
