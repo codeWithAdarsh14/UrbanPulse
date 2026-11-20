@@ -1,0 +1,112 @@
+/* Notification System — Toast Stack Styles */
+.up-toast-stack {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 380px;
+  width: calc(100% - 48px);
+  pointer-events: none;
+}
+
+.up-toast {
+  pointer-events: auto;
+  background: rgba(17, 23, 43, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #7838F5;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(120, 56, 245, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #F8FAFC;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 3 Variants: success, error, info */
+.up-toast--success {
+  border-left-color: #10B981;
+}
+
+.up-toast--success .up-toast__icon {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.up-toast--error {
+  border-left-color: #EF4444;
+}
+
+.up-toast--error .up-toast__icon {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.up-toast--info {
+  border-left-color: #7838F5;
+}
+
+.up-toast--info .up-toast__icon {
+  color: #A855F7;
+  background: rgba(120, 56, 245, 0.15);
+}
+
+.up-toast__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.up-toast__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.up-toast__message {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #F8FAFC;
+  word-break: break-word;
+}
+
+.up-toast__close {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.up-toast__close:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.08);
+}

@@ -1,0 +1,262 @@
+/* ============================================================
+   UrbanPulse — Modern Dark Civic Design System
+   Matches Dashboard Theme: Deep Purple & Cyan Neon Accents
+   ============================================================ */
+
+:root {
+  /* Color Palette */
+  --up-bg: #0B1020;
+  --up-bg-deep: #080B18;
+  --up-bg-secondary: #10162A;
+  --up-card: #151C32;
+  --up-card-hover: #1A233E;
+  --up-surface: #1E2745;
+  --up-border: #252D45;
+  --up-border-light: rgba(255, 255, 255, 0.08);
+
+  /* Purples & Cyan */
+  --up-purple-primary: #7C3AED;
+  --up-purple-secondary: #9333EA;
+  --up-purple-glow: rgba(124, 58, 237, 0.35);
+  --up-purple-soft: rgba(124, 58, 237, 0.12);
+  --up-cyan-accent: #22D3EE;
+  --up-cyan-glow: rgba(34, 211, 238, 0.3);
+  --up-cyan-soft: rgba(34, 211, 238, 0.12);
+
+  /* Status Colors */
+  --up-success: #10B981;
+  --up-success-soft: rgba(16, 185, 129, 0.12);
+  --up-warning: #F59E0B;
+  --up-warning-soft: rgba(245, 158, 11, 0.12);
+  --up-error: #EF4444;
+  --up-error-soft: rgba(239, 68, 68, 0.14);
+
+  /* Text Hierarchy */
+  --up-text-primary: #FFFFFF;
+  --up-text-secondary: #94A3B8;
+  --up-text-muted: #64748B;
+
+  /* Typography */
+  --up-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --up-font-mono: 'JetBrains Mono', monospace;
+
+  /* Glassmorphism & Radii */
+  --up-glass-bg: rgba(21, 28, 50, 0.75);
+  --up-glass-border: rgba(37, 45, 69, 0.8);
+  --up-glass-blur: blur(14px);
+
+  --up-radius-sm: 6px;
+  --up-radius-md: 10px;
+  --up-radius-lg: 16px;
+  --up-radius-xl: 22px;
+  --up-radius-full: 9999px;
+
+  /* Shadows */
+  --up-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --up-shadow-elevated: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 20px rgba(124, 58, 237, 0.15);
+  --up-shadow-glow: 0 0 30px rgba(124, 58, 237, 0.3);
+  --up-shadow-cyan: 0 0 25px rgba(34, 211, 238, 0.25);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+  background-color: var(--up-bg);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--up-font);
+  background: var(--up-bg);
+  color: var(--up-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--up-bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--up-border);
+  border-radius: var(--up-radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--up-purple-secondary);
+}
+
+/* Base Utility Classes */
+.up-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.up-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--up-radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.up-badge--purple {
+  background: var(--up-purple-soft);
+  color: #C084FC;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.up-badge--cyan {
+  background: var(--up-cyan-soft);
+  color: var(--up-cyan-accent);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.up-badge--green {
+  background: var(--up-success-soft);
+  color: var(--up-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.up-badge--amber {
+  background: var(--up-warning-soft);
+  color: var(--up-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.up-badge--red {
+  background: var(--up-error-soft);
+  color: var(--up-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.up-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--up-cyan-accent);
+  box-shadow: 0 0 8px var(--up-cyan-accent);
+  animation: pulse-glow 2s infinite;
+}
+
+.up-pulse-dot--green {
+  background: var(--up-success);
+  box-shadow: 0 0 8px var(--up-success);
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 14px currentColor; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Gradient Text */
+.up-text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #A855F7 80%, #22D3EE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.up-text-gradient-purple {
+  background: linear-gradient(135deg, #C084FC 0%, #9333EA 50%, #22D3EE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Standard Buttons */
+.up-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 0.93rem;
+  font-weight: 600;
+  border-radius: var(--up-radius-md);
+  transition: all 0.22s ease;
+  white-space: nowrap;
+}
+
+.up-btn--primary {
+  background: linear-gradient(135deg, var(--up-purple-primary) 0%, var(--up-purple-secondary) 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px var(--up-purple-glow);
+}
+
+.up-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.5);
+  filter: brightness(1.1);
+}
+
+.up-btn--secondary {
+  background: var(--up-card);
+  color: var(--up-text-primary);
+  border: 1px solid var(--up-border);
+}
+
+.up-btn--secondary:hover {
+  background: var(--up-card-hover);
+  border-color: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+}
+
+.up-btn--cyan {
+  background: linear-gradient(135deg, #0891B2 0%, var(--up-cyan-accent) 100%);
+  color: #06101E;
+  font-weight: 700;
+  box-shadow: 0 4px 18px var(--up-cyan-glow);
+}
+
+.up-btn--cyan:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px rgba(34, 211, 238, 0.5);
+}
+
+.up-btn--ghost {
+  color: var(--up-text-secondary);
+}
+
+.up-btn--ghost:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.up-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
