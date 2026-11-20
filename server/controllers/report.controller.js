@@ -49,6 +49,7 @@ const createReport = async (req, res) => {
       data: saved
     });
   } catch (err) {
+    console.error('Error creating report:', err);
     // Mongoose validation errors → 400
     if (err.name === 'ValidationError') {
       return res.status(400).json({
@@ -58,7 +59,7 @@ const createReport = async (req, res) => {
     }
     return res.status(500).json({
       status: 'error',
-      message: 'Failed to create report'
+      message: err.message || 'Failed to create report'
     });
   }
 };
