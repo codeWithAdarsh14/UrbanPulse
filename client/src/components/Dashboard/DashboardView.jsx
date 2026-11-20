@@ -98,12 +98,36 @@ function formatEventDateTime(dateInput) {
  * Fetches reports and events on mount and displays civic metrics,
  * live activity feed, filtered reports table, and upcoming events.
  */
-export default function DashboardView({ onReportClick }) {
+export default function DashboardView({
+  onReportClick,
+  onEventClick,
+  lastSubmittedReport,
+  lastSubmittedEvent,
+  activeLocationName = 'Mathura District',
+}) {
   const [reports, setReports] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reportFilter, setReportFilter] = useState('all'); // 'all' | 'active' | 'resolved'
   const [expandedEventId, setExpandedEventId] = useState(null);
+
+  // Synchronize immediately when a new report is submitted
+  useEffect(() => {
+    if (!lastSubmittedReport) return;
+    setReports((prev) => {
+      if (prev.some((r) => r._id === lastSubmittedReport._id)) return prev;
+      return [lastSubmittedReport, ...prev];
+    });
+  }, [lastSubmittedReport]);
+
+  // Synchronize immediately when a new event is submitted
+  useEffect(() => {
+    if (!lastSubmittedEvent) return;
+    setEvents((prev) => {
+      if (prev.some((e) => e._id === lastSubmittedEvent._id)) return prev;
+      return [lastSubmittedEvent, ...prev];
+    });
+  }, [lastSubmittedEvent]);
 
   // Fetch reports and events on mount
   useEffect(() => {
@@ -247,9 +271,32 @@ export default function DashboardView({ onReportClick }) {
               </svg>
               <span>Report an Issue</span>
             </button>
+            <button
+              className="hero-cta hero-cta--event"
+              onClick={onEventClick}
+              type="button"
+              aria-label="Report an Event"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <span>Report an Event</span>
+            </button>
             <div className="hero-meta-pill">
               <span className="live-pulse"></span>
-              Live in Mathura District
+              Live in {activeLocationName}
             </div>
           </div>
         </div>

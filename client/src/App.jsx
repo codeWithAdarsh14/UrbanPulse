@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import MapView from './components/Map/MapView';
 import MultiStepReportModal from './components/ReportModal/MultiStepReportModal';
+import EventModal from './components/EventModal/EventModal';
 import Sidebar from './components/Layout/Sidebar';
 import TopBar from './components/Layout/TopBar';
 import DashboardView from './components/Dashboard/DashboardView';
@@ -21,8 +22,22 @@ export default function App() {
   // Report modal state
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
+  // Event modal state
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+
+  // Location telemetry shared between MapView and modals
+  const [userLocation, setUserLocation] = useState(null);
+  const [mapPinLocation, setMapPinLocation] = useState(null);
+
   // Active geographic location name (e.g. 'GLA University, Mathura' or 'Mathura, UP')
   const [activeLocationName, setActiveLocationName] = useState('Mathura, UP');
+
+  // Lifted submission records for immediate UI refresh across Map and Dashboard
+  const [lastSubmittedReport, setLastSubmittedReport] = useState(null);
+  const [lastSubmittedEvent, setLastSubmittedEvent] = useState(null);
+
+  // Trigger from TopBar location pill to focus search in MapView
+  const [focusLocationSearchTrigger, setFocusLocationSearchTrigger] = useState(0);
 
   // Sidebar collapse toggle state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -35,43 +50,88 @@ export default function App() {
 
   // Dynamic Air Quality Index telemetry for active location
   const [aqiData, setAqiData] = useState({
-    aqi: 179,
-    category: 'Moderate',
-    color: '#F59E0B',
-    gradient: 'linear-gradient(90deg, #10B981, #F59E0B)',
-    barWidth: '45%',
+    aqi: null,
+    category: 'Unavailable',
+    color: '#94A3B8',
+    gradient: '#64748B',
+    barWidth: '0%',
     stationName: 'Mathura, UP',
-    loading: false,
-    status: 'success',
+    loading: true,
+    status: 'unavailable',
   });
 
   // Fetch live AQI whenever activeLocationName changes and refresh every 10 minutes
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    let inFlightController = null;
+    let latestRequestId = 0;
 
-    async function updateAQI() {
-      setAqiData((prev) => ({ ...prev, loading: true }));
+    async function updateAQI(showLoading = true) {
+      // Abort any prior in-flight request before launching a fresh one
+      if (inFlightController) {
+        inFlightController.abort();
+      }
+
+      // Instantiate a fresh AbortController for every request
+      const controller = new AbortController();
+      inFlightController = controller;
+      const currentRequestId = ++latestRequestId;
+      const targetLocation = activeLocationName;
+
+      if (showLoading) {
+        setAqiData((prev) => ({
+          ...prev,
+          stationName: targetLocation,
+          loading: true,
+        }));
+      }
+
       try {
-        const liveAQI = await fetchLiveCityAQI(activeLocationName, controller.signal);
-        if (isMounted) {
-          setAqiData({ ...liveAQI, loading: false });
+        const liveAQI = await fetchLiveCityAQI(targetLocation, controller.signal);
+
+        // Guard against race conditions and unmounts
+        if (isMounted && currentRequestId === latestRequestId && !controller.signal.aborted) {
+          setAqiData({
+            ...liveAQI,
+            stationName: liveAQI.stationName || targetLocation,
+            loading: false,
+          });
         }
       } catch (err) {
-        if (err.name !== 'AbortError' && isMounted) {
-          setAqiData((prev) => ({ ...prev, loading: false }));
+        // Discard AbortError cleanly; handle actual errors without stale overrides
+        if (err.name !== 'AbortError' && isMounted && currentRequestId === latestRequestId) {
+          setAqiData((prev) => ({
+            ...prev,
+            aqi: null,
+            category: 'Unavailable',
+            color: '#94A3B8',
+            gradient: '#64748B',
+            barWidth: '0%',
+            stationName: targetLocation,
+            loading: false,
+            status: 'unavailable',
+          }));
+        }
+      } finally {
+        if (inFlightController === controller) {
+          inFlightController = null;
         }
       }
     }
 
-    updateAQI();
+    // Initial fetch on location change
+    updateAQI(true);
 
-    // Periodic refresh every 10 minutes
-    const interval = setInterval(updateAQI, 10 * 60 * 1000);
+    // Periodic background refresh every 10 minutes with a fresh AbortController per tick
+    const interval = setInterval(() => {
+      updateAQI(false);
+    }, 10 * 60 * 1000);
 
     return () => {
       isMounted = false;
-      controller.abort();
+      if (inFlightController) {
+        inFlightController.abort();
+      }
       clearInterval(interval);
     };
   }, [activeLocationName]);
@@ -123,9 +183,27 @@ export default function App() {
    */
   const handleReportSuccess = useCallback((report) => {
     const title = report?.title ? `"${report.title}"` : 'Issue';
-    addToast(`${title} reported successfully to Mathura Civic Cell!`, 'success');
+    addToast(`${title} reported successfully to Civic Operations Cell!`, 'success');
     setIsReportModalOpen(false);
+    if (report) {
+      setLastSubmittedReport(report);
+    }
     if (activeNav === 'report') {
+      setActiveNav('map');
+    }
+  }, [addToast, activeNav]);
+
+  /**
+   * Handle successful event creation
+   */
+  const handleEventSuccess = useCallback((event) => {
+    const title = event?.title ? `"${event.title}"` : 'Event';
+    addToast(`${title} organized successfully and pinned on the map!`, 'success');
+    setIsEventModalOpen(false);
+    if (event) {
+      setLastSubmittedEvent(event);
+    }
+    if (activeNav === 'events') {
       setActiveNav('map');
     }
   }, [addToast, activeNav]);
@@ -148,6 +226,11 @@ export default function App() {
           onSearch={(val) => setSearchQuery(val)}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          activeLocationName={activeLocationName}
+          onLocationClick={() => {
+            setActiveNav('map');
+            setFocusLocationSearchTrigger((prev) => prev + 1);
+          }}
         />
 
         {/* Dynamic Route Content */}
@@ -155,6 +238,10 @@ export default function App() {
           {activeNav === 'dashboard' && (
             <DashboardView
               onReportClick={() => setIsReportModalOpen(true)}
+              onEventClick={() => setIsEventModalOpen(true)}
+              lastSubmittedReport={lastSubmittedReport}
+              lastSubmittedEvent={lastSubmittedEvent}
+              activeLocationName={activeLocationName}
             />
           )}
 
@@ -162,8 +249,15 @@ export default function App() {
             <MapView
               isReportModalOpen={isReportModalOpen}
               setIsReportModalOpen={setIsReportModalOpen}
+              isEventModalOpen={isEventModalOpen}
+              setIsEventModalOpen={setIsEventModalOpen}
+              onLocationUpdate={setUserLocation}
+              onMapPinUpdate={setMapPinLocation}
               activeLocationName={activeLocationName}
               onLocationNameChange={setActiveLocationName}
+              lastSubmittedReport={lastSubmittedReport}
+              lastSubmittedEvent={lastSubmittedEvent}
+              focusSearchTrigger={focusLocationSearchTrigger}
             />
           )}
 
@@ -179,18 +273,18 @@ export default function App() {
                 </svg>
               </div>
               <span className="up-coming-soon__tag">Community Events</span>
-              <h2 className="up-coming-soon__title">Community Events Coming Soon</h2>
+              <h2 className="up-coming-soon__title">Community Events</h2>
               <p className="up-coming-soon__desc">
                 Organize and attend local cleanup drives, tree planting campaigns, and citizen townhalls.
-                Full RSVP schedules, community leaderboards, and location maps will launch in the next release.
+                Submit upcoming events to bring your neighborhood together.
               </p>
               <div className="up-coming-soon__actions">
                 <button
                   type="button"
                   className="up-btn up-btn--primary"
-                  onClick={() => setActiveNav('dashboard')}
+                  onClick={() => setIsEventModalOpen(true)}
                 >
-                  Back to Dashboard
+                  + Report an Event
                 </button>
                 <button
                   type="button"
@@ -289,6 +383,25 @@ export default function App() {
             </svg>
             Report an Issue
           </button>
+          <button
+            type="button"
+            className="up-rp-cta-btn up-rp-cta-btn--event"
+            style={{
+              marginTop: '8px',
+              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(14, 165, 233, 0.2) 100%)',
+              borderColor: 'rgba(6, 182, 212, 0.4)',
+              color: '#38bdf8'
+            }}
+            onClick={() => setIsEventModalOpen(true)}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            Report an Event
+          </button>
         </div>
 
         {/* Emergency Helplines */}
@@ -362,7 +475,18 @@ export default function App() {
       <MultiStepReportModal
         isOpen={isReportModalOpen}
         onClose={handleModalClose}
+        userLocation={userLocation}
+        mapPinLocation={mapPinLocation}
         onSuccess={handleReportSuccess}
+      />
+
+      {/* ── Event Modal (Triggerable anywhere) ── */}
+      <EventModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        userLocation={userLocation}
+        mapPinLocation={mapPinLocation}
+        onSuccess={handleEventSuccess}
       />
 
       {/* ── Fixed Toast Notifications Stack (Bottom-Right) ── */}

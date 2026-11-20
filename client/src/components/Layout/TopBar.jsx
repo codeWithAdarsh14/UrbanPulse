@@ -1,7 +1,13 @@
 import React from 'react';
 import './TopBar.css';
 
-export default function TopBar({ onSearch, searchQuery = '', setSearchQuery }) {
+export default function TopBar({
+  onSearch,
+  searchQuery = '',
+  setSearchQuery,
+  activeLocationName = 'Mathura, UP',
+  onLocationClick,
+}) {
   const handleSearchChange = (e) => {
     const value = e.target.value;
     if (setSearchQuery) {
@@ -57,12 +63,24 @@ export default function TopBar({ onSearch, searchQuery = '', setSearchQuery }) {
       {/* ── Right: Location, Notifications, Avatar ── */}
       <div className="up-topbar-right">
         {/* Location pill */}
-        <div className="up-location-pill" title="Current Region">
+        <div
+          className="up-location-pill"
+          title="Click to explore this location on map"
+          onClick={onLocationClick}
+          style={{ cursor: onLocationClick ? 'pointer' : 'default' }}
+          role={onLocationClick ? 'button' : undefined}
+          tabIndex={onLocationClick ? 0 : undefined}
+          onKeyDown={(e) => {
+            if (onLocationClick && (e.key === 'Enter' || e.key === ' ')) {
+              onLocationClick();
+            }
+          }}
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
-          <span className="up-location-text">Mathura, UP</span>
+          <span className="up-location-text">{activeLocationName}</span>
         </div>
 
         {/* Notification Bell */}
