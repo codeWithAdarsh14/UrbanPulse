@@ -1,0 +1,300 @@
+/* ── UrbanPulse AuthGate & Authorization Shield ── */
+.up-authgate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 20%, rgba(124, 58, 237, 0.15) 0%, rgba(15, 23, 42, 0.98) 70%), #0A0F1D;
+  backdrop-filter: blur(16px);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.up-authgate-container {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(124, 58, 237, 0.15);
+  border-radius: 20px;
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+  animation: upFadeScale 0.35s ease-out;
+}
+
+@keyframes upFadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.up-authgate-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7C3AED, #22D3EE, #10B981);
+}
+
+.up-authgate-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.up-authgate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  color: #C084FC;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.up-authgate-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #A855F7;
+  box-shadow: 0 0 10px #A855F7;
+  animation: upPulse 2s infinite;
+}
+
+@keyframes upPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.up-authgate-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #F8FAFC;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.up-authgate-sub {
+  font-size: 0.86rem;
+  color: #94A3B8;
+  line-height: 1.45;
+}
+
+/* Tabs */
+.up-authgate-tabs {
+  display: flex;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.up-authgate-tab {
+  flex: 1;
+  padding: 9px;
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.up-authgate-tab.active {
+  background: #7C3AED;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+/* Form inputs */
+.up-authgate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.up-authgate-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.up-authgate-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #CBD5E1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.up-authgate-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.up-authgate-input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #F8FAFC;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.up-authgate-input:focus {
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+}
+
+.up-authgate-input::placeholder {
+  color: #64748B;
+}
+
+.up-authgate-toggle-pw {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.up-authgate-toggle-pw:hover {
+  color: #E2E8F0;
+}
+
+/* Alert Boxes */
+.up-authgate-alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.up-authgate-alert--error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #FCA5A5;
+}
+
+.up-authgate-alert--success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #6EE7B7;
+}
+
+/* Submit Button */
+.up-authgate-submit {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  transition: all 0.2s ease;
+  margin-top: 6px;
+}
+
+.up-authgate-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+}
+
+.up-authgate-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Demo chip */
+.up-authgate-demo-box {
+  margin-top: 18px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px dashed rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.up-authgate-demo-text {
+  font-size: 0.78rem;
+  color: #94A3B8;
+}
+
+.up-authgate-demo-text strong {
+  color: #CBD5E1;
+}
+
+.up-authgate-demo-btn {
+  background: rgba(34, 211, 238, 0.15);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  color: #22D3EE;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.up-authgate-demo-btn:hover {
+  background: rgba(34, 211, 238, 0.25);
+  border-color: #22D3EE;
+}
+
+/* External Portal link */
+.up-authgate-portal-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.82rem;
+  color: #64748B;
+}
+
+.up-authgate-portal-link a {
+  color: #22D3EE;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.up-authgate-portal-link a:hover {
+  text-decoration: underline;
+}

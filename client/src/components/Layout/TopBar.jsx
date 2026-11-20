@@ -7,6 +7,9 @@ export default function TopBar({
   setSearchQuery,
   activeLocationName = 'Mathura, UP',
   onLocationClick,
+  user,
+  onOpenSettings,
+  onLogout,
 }) {
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -95,9 +98,48 @@ export default function TopBar({
         </div>
 
         {/* User avatar circle */}
-        <div className="up-topbar-avatar" title="Urban Citizen">
-          <span>U</span>
+        <div
+          className="up-topbar-avatar"
+          title={`${user?.name || 'Citizen'} (${user?.role || 'citizen'}) — Click to open settings`}
+          onClick={onOpenSettings}
+          style={{ cursor: onOpenSettings ? 'pointer' : 'default' }}
+          role={onOpenSettings ? 'button' : undefined}
+          tabIndex={onOpenSettings ? 0 : undefined}
+        >
+          <span>{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
         </div>
+
+        {/* Quick Sign Out Action */}
+        {onLogout && (
+          <button
+            type="button"
+            className="up-topbar-logout-btn"
+            title="Sign Out"
+            aria-label="Sign Out"
+            onClick={onLogout}
+            style={{
+              background: 'rgba(239, 68, 68, 0.12)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#F87171',
+              borderRadius: '8px',
+              padding: '7px 10px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              marginLeft: '6px'
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Exit</span>
+          </button>
+        )}
       </div>
     </header>
   );
