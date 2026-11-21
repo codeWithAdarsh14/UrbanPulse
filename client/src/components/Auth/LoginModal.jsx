@@ -146,7 +146,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister, onLogi
               type="email"
               className="up-input"
               style={{ paddingLeft: '14px' }}
-              placeholder="citizen@urbanpulse.org"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading || lockoutSec > 0}
@@ -196,18 +196,6 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister, onLogi
             {loading ? 'Authenticating & Redirecting...' : 'Sign In & Open Dashboard ➔'}
           </button>
         </form>
-
-        <div style={{
-          marginTop: '16px',
-          padding: '8px 12px',
-          background: 'var(--up-surface)',
-          borderRadius: '6px',
-          fontSize: '0.75rem',
-          color: '#94A3B8',
-          border: '1px solid var(--up-border)'
-        }}>
-          <strong>Demo:</strong> <code>citizen@urbanpulse.org</code> | <code>UrbanPulse2026!</code>
-        </div>
 
         <div style={{ textAlign: 'center', marginTop: '18px', fontSize: '0.84rem', color: '#94A3B8' }}>
           Don't have an account?{' '}

@@ -157,7 +157,7 @@ export default function LoginPage({ onNavigate }) {
                 id="login-email"
                 type="email"
                 className="up-input"
-                placeholder="citizen@urbanpulse.org"
+                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading || lockoutSec > 0}
@@ -249,22 +249,6 @@ export default function LoginPage({ onNavigate }) {
             )}
           </button>
         </form>
-
-        {/* Demo credentials hint */}
-        <div style={{
-          marginTop: '18px',
-          padding: '10px 12px',
-          background: 'var(--up-surface)',
-          borderRadius: '8px',
-          fontSize: '0.78rem',
-          color: '#94A3B8',
-          border: '1px solid var(--up-border)',
-          lineHeight: '1.4'
-        }}>
-          <strong style={{ color: '#22D3EE' }}>Test Account:</strong> <br />
-          Email: <code style={{ color: '#FFF' }}>citizen@urbanpulse.org</code> <br />
-          Password: <code style={{ color: '#FFF' }}>UrbanPulse2026!</code>
-        </div>
 
         {/* Register Footer */}
         <div className="up-auth-footer-link">

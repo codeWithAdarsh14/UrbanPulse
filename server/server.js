@@ -7,6 +7,7 @@ const healthRoutes = require('./routes/health.routes');
 const reportRoutes = require('./routes/report.routes');
 const eventRoutes = require('./routes/event.routes');
 const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Routes
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/events', eventRoutes);
 

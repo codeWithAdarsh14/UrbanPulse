@@ -37,31 +37,6 @@ export default function AuthGate({ onLoginSuccess }) {
     return () => clearInterval(interval);
   }, [lockoutSec]);
 
-  // Handle Demo 1-click Fill
-  const handleQuickDemo = async () => {
-    setEmail('citizen@urbanpulse.org');
-    setPassword('UrbanPulse2026!');
-    setError('');
-    setLoading(true);
-
-    try {
-      const res = await login({
-        email: 'citizen@urbanpulse.org',
-        password: 'UrbanPulse2026!',
-      });
-      setSuccess('Demo citizen authorized! Unlocking console...');
-      setTimeout(() => {
-        if (onLoginSuccess) {
-          onLoginSuccess(res.user);
-        }
-      }, 500);
-    } catch (err) {
-      setError(err.message || 'Demo authentication failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -206,7 +181,7 @@ export default function AuthGate({ onLoginSuccess }) {
               id="gate-email"
               type="email"
               className="up-authgate-input"
-              placeholder="citizen@urbanpulse.org"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -269,29 +244,6 @@ export default function AuthGate({ onLoginSuccess }) {
             )}
           </button>
         </form>
-
-        {/* Demo Fast-Sign-In Chip */}
-        <div className="up-authgate-demo-box">
-          <div className="up-authgate-demo-text">
-            <strong>Demo Account:</strong> <code>citizen@urbanpulse.org</code>
-          </div>
-          <button
-            type="button"
-            className="up-authgate-demo-btn"
-            onClick={handleQuickDemo}
-            disabled={loading || lockoutSec > 0}
-          >
-            1-Click Demo
-          </button>
-        </div>
-
-        {/* External Portal Link */}
-        <div className="up-authgate-portal-link">
-          Prefer the public landing page?{' '}
-          <a href="http://localhost:5174" target="_blank" rel="noopener noreferrer">
-            Open Portal on :5174 ➔
-          </a>
-        </div>
       </div>
     </div>
   );

@@ -1,101 +1,149 @@
 import React, { useState, useEffect } from 'react';
+import { getProfile, updateProfile } from '../../services/authService';
 import './SettingsModal.css';
 
 /**
- * SettingsModal Component — Citizen Profile, Location, & Notification Controls
- * Manages citizen display name, street address, 6-digit postal pincode,
- * and event alert preferences.
+ * SettingsModal Component — Citizen Profile & Preferences
+ * Real MongoDB-backed user profile view & edit modal.
  */
 export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onLogout }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('Civil Lines, Mathura');
-  const [pincode, setPincode] = useState('281001');
+  const [avatar, setAvatar] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [country, setCountry] = useState('India');
   const [alertNearbyEvents, setAlertNearbyEvents] = useState(true);
   const [alertCivic, setAlertCivic] = useState(true);
   const [alertUpdates, setAlertUpdates] = useState(false);
+
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Sync state with current user
+  // Fetch real user data from MongoDB Atlas on modal open
   useEffect(() => {
+    if (!isOpen) return;
+
+    setError('');
+    setSuccess('');
+
+    // Pre-populate with current local user if available
     if (user) {
-      setName(user.name || 'Urban Citizen');
-      setEmail(user.email || 'citizen@urbanpulse.org');
-      setPhone(user.phone || '');
-      if (user.address) setAddress(user.address);
-      if (user.pincode) setPincode(user.pincode);
-      if (user.preferences?.alertNearbyEvents !== undefined) {
-        setAlertNearbyEvents(user.preferences.alertNearbyEvents);
+      populateFields(user);
+    }
+
+    // Then fetch fresh data from MongoDB
+    let isMounted = true;
+    setLoadingProfile(true);
+
+    getProfile()
+      .then((freshUser) => {
+        if (isMounted && freshUser) {
+          populateFields(freshUser);
+        }
+      })
+      .catch((err) => {
+        // Fall back to passed user prop if network blip
+        if (isMounted && user) {
+          populateFields(user);
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoadingProfile(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, user]);
+
+  const populateFields = (userData) => {
+    setName(userData.name || '');
+    setEmail(userData.email || 'Not provided');
+    setPhone(userData.phone || '');
+    setAvatar(userData.avatar || '');
+    setAddress(userData.address || '');
+    setCity(userData.city || '');
+    setState(userData.state || '');
+    setPincode(userData.pincode || '');
+    setCountry(userData.country || 'India');
+
+    if (userData.preferences) {
+      if (userData.preferences.alertNearbyEvents !== undefined) {
+        setAlertNearbyEvents(userData.preferences.alertNearbyEvents);
       }
-      if (user.preferences?.alertCivic !== undefined) {
-        setAlertCivic(user.preferences.alertCivic);
+      if (userData.preferences.alertCivic !== undefined) {
+        setAlertCivic(userData.preferences.alertCivic);
       }
-      if (user.preferences?.alertUpdates !== undefined) {
-        setAlertUpdates(user.preferences.alertUpdates);
+      if (userData.preferences.alertUpdates !== undefined) {
+        setAlertUpdates(userData.preferences.alertUpdates);
       }
     }
-  }, [user, isOpen]);
+  };
 
   if (!isOpen) return null;
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
     if (!name.trim() || name.trim().length < 2) {
-      setError('Name must be at least 2 characters long.');
+      setError('Display name must be at least 2 characters long.');
       return;
     }
 
     if (pincode && pincode.trim().length !== 6) {
-      setError('Pincode must be exactly 6 digits (e.g. 281001).');
+      setError('Postal PIN code must be exactly 6 digits (e.g. 281001).');
       return;
     }
 
-    const updatedUser = {
-      ...user,
-      name: name.trim(),
-      phone: phone.trim(),
-      address: address.trim(),
-      pincode: pincode.trim(),
-      preferences: {
-        alertNearbyEvents,
-        alertCivic,
-        alertUpdates,
-      },
-    };
+    setIsSaving(true);
 
-    // Save to local storage
     try {
-      localStorage.setItem('up_auth_user', JSON.stringify(updatedUser));
+      const payload = {
+        name: name.trim(),
+        phone: phone.trim(),
+        avatar: avatar.trim(),
+        address: address.trim(),
+        city: city.trim(),
+        state: state.trim(),
+        pincode: pincode.trim(),
+        country: country.trim() || 'India',
+        preferences: {
+          alertNearbyEvents,
+          alertCivic,
+          alertUpdates,
+        },
+      };
+
+      // Real MongoDB update via PUT /api/users/profile
+      const updatedUser = await updateProfile(payload);
+
+      if (onUpdateUser) {
+        onUpdateUser(updatedUser);
+      }
+
+      setSuccess('Profile updated and saved to MongoDB successfully!');
+      setTimeout(() => {
+        onClose();
+      }, 1000);
     } catch (err) {
-      console.error('Failed to save user in storage:', err);
+      setError(err.message || 'Failed to save profile changes to MongoDB.');
+    } finally {
+      setIsSaving(false);
     }
-
-    if (onUpdateUser) {
-      onUpdateUser(updatedUser);
-    }
-
-    setSuccess('Profile and settings updated successfully!');
-    setTimeout(() => {
-      onClose();
-    }, 900);
   };
 
   const handleLogoutClick = () => {
     if (window.confirm('Are you sure you want to log out of UrbanPulse?')) {
-      try {
-        localStorage.removeItem('up_auth_token');
-        localStorage.removeItem('up_auth_user');
-      } catch (e) {}
-
       if (onLogout) {
         onLogout();
-      } else {
-        window.location.href = 'http://localhost:5174';
       }
     }
   };
@@ -122,18 +170,34 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
         {/* Form Body */}
         <form onSubmit={handleSave}>
           <div className="up-settings-body">
-            {/* Live User Card */}
+            {/* Live User Preview Card */}
             <div className="up-settings-user-preview">
-              <div className="up-settings-avatar-big">{initial}</div>
+              <div className="up-settings-avatar-big">
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt={name || 'Avatar'}
+                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  initial
+                )}
+              </div>
               <div className="up-settings-user-info">
                 <h4>{name || 'Citizen'}</h4>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                   <span className="up-settings-user-badge">
                     ● {user?.role ? user.role.toUpperCase() : 'CITIZEN'}
                   </span>
-                  <span style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#94A3B8' }}>
                     {email}
                   </span>
+                  {loadingProfile && (
+                    <span style={{ fontSize: '0.74rem', color: '#22D3EE' }}>
+                      (Refreshing from MongoDB...)
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -172,7 +236,7 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
 
               <div className="up-settings-group">
                 <label className="up-settings-label" htmlFor="settings-name">
-                  Full Display Name
+                  Full Name
                 </label>
                 <input
                   id="settings-name"
@@ -180,7 +244,7 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
                   className="up-settings-input"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
+                  placeholder="Enter your full name"
                   required
                 />
               </div>
@@ -195,12 +259,13 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
                   className="up-settings-input"
                   value={email}
                   disabled
+                  title="Email is protected and cannot be modified here."
                 />
               </div>
 
               <div className="up-settings-group">
                 <label className="up-settings-label" htmlFor="settings-phone">
-                  Phone Number (Optional)
+                  Phone Number
                 </label>
                 <input
                   id="settings-phone"
@@ -208,7 +273,21 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
                   className="up-settings-input"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
+                  placeholder="e.g. +91 98765 43210 (Not provided)"
+                />
+              </div>
+
+              <div className="up-settings-group">
+                <label className="up-settings-label" htmlFor="settings-avatar">
+                  Profile Image URL (Optional)
+                </label>
+                <input
+                  id="settings-avatar"
+                  type="url"
+                  className="up-settings-input"
+                  value={avatar}
+                  onChange={(e) => setAvatar(e.target.value)}
+                  placeholder="https://example.com/photo.jpg (Not provided)"
                 />
               </div>
             </div>
@@ -216,7 +295,7 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
             {/* Location & Address */}
             <div>
               <div className="up-settings-section-title">
-                Location & Address
+                Location & Residential Address
               </div>
 
               <div className="up-settings-group">
@@ -229,28 +308,69 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
                   className="up-settings-input"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. 14, Civil Lines, Mathura"
-                  required
+                  placeholder="e.g. House No. 42, Civil Lines (Not provided)"
                 />
               </div>
 
-              <div className="up-settings-group">
-                <label className="up-settings-label" htmlFor="settings-pincode">
-                  Pincode / Postal Code (6 Digits)
-                </label>
-                <input
-                  id="settings-pincode"
-                  type="text"
-                  maxLength="6"
-                  className="up-settings-input"
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
-                  placeholder="e.g. 281001"
-                  required
-                />
-                <span style={{ fontSize: '0.74rem', color: '#22D3EE', marginTop: '4px', display: 'block' }}>
-                  Used to alert you about new community events and emergencies in your locality.
-                </span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="up-settings-group">
+                  <label className="up-settings-label" htmlFor="settings-city">
+                    City
+                  </label>
+                  <input
+                    id="settings-city"
+                    type="text"
+                    className="up-settings-input"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="e.g. Mathura"
+                  />
+                </div>
+
+                <div className="up-settings-group">
+                  <label className="up-settings-label" htmlFor="settings-state">
+                    State
+                  </label>
+                  <input
+                    id="settings-state"
+                    type="text"
+                    className="up-settings-input"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    placeholder="e.g. Uttar Pradesh"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="up-settings-group">
+                  <label className="up-settings-label" htmlFor="settings-pincode">
+                    PIN / Postal Code (6 Digits)
+                  </label>
+                  <input
+                    id="settings-pincode"
+                    type="text"
+                    maxLength="6"
+                    className="up-settings-input"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="e.g. 281001"
+                  />
+                </div>
+
+                <div className="up-settings-group">
+                  <label className="up-settings-label" htmlFor="settings-country">
+                    Country
+                  </label>
+                  <input
+                    id="settings-country"
+                    type="text"
+                    className="up-settings-input"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder="e.g. India"
+                  />
+                </div>
               </div>
             </div>
 
@@ -327,14 +447,16 @@ export default function SettingsModal({ isOpen, onClose, user, onUpdateUser, onL
                 type="button"
                 className="up-btn-cancel"
                 onClick={onClose}
+                disabled={isSaving}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 className="up-btn-save"
+                disabled={isSaving}
               >
-                Save Changes
+                {isSaving ? 'Saving to Database...' : 'Save Changes'}
               </button>
             </div>
           </div>

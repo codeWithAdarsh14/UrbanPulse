@@ -17,17 +17,30 @@ if (rawDnsServers && rawDnsServers.trim()) {
 }
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
   if (!uri) {
     throw new Error(
-      'MONGODB_URI is not defined. Add it to your .env file before starting the server.'
+      'MONGODB_URI (or MONGO_URI) is not defined. Add it to your .env file before starting the server.'
     );
   }
 
   try {
-    await mongoose.connect(uri);
-    console.log('MongoDB Atlas connected successfully.');
+    let targetUri = uri;
+    try {
+      const parsed = new URL(uri);
+      // Ensure connecting to the 'auth' database if unspecified or pointing to urbanpulse
+      if (!parsed.pathname || parsed.pathname === '/' || parsed.pathname === '/urbanpulse') {
+        parsed.pathname = '/auth';
+        targetUri = parsed.toString();
+      }
+    } catch (e) {
+      // Keep direct URI
+    }
+
+    const conn = await mongoose.connect(targetUri);
+    console.log(`MongoDB Atlas connected successfully to database: "${conn.connection.name}"`);
+    return conn;
   } catch (err) {
     // Re-throw with a plain message; never surface the URI in the error.
     throw new Error(`MongoDB connection failed: ${err.message}`);

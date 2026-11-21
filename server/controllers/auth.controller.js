@@ -18,7 +18,7 @@ const generateToken = (userId, role) => {
 // POST /api/auth/register
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, role, phone } = req.body;
+    const { name, email, password, role, phone, address, city, state, pincode, country, avatar } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -53,7 +53,13 @@ exports.register = async (req, res, next) => {
       email: normalizedEmail,
       password,
       role: userRole,
-      phone: phone ? phone.trim() : null,
+      phone: phone ? phone.trim() : '',
+      avatar: avatar ? avatar.trim() : '',
+      address: address ? address.trim() : '',
+      city: city ? city.trim() : '',
+      state: state ? state.trim() : '',
+      pincode: pincode ? pincode.trim() : '',
+      country: country ? country.trim() : 'India',
     });
 
     await user.save();
@@ -117,7 +123,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// GET /api/auth/me
+// GET /api/auth/me or GET /api/users/profile
 exports.getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -130,6 +136,97 @@ exports.getMe = async (req, res, next) => {
 
     return res.status(200).json({
       status: 'success',
+      user: user.toJSON(),
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PUT /api/users/profile or PUT /api/auth/profile
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'User profile not found',
+      });
+    }
+
+    const {
+      name,
+      phone,
+      avatar,
+      address,
+      city,
+      state,
+      pincode,
+      country,
+      preferences,
+    } = req.body;
+
+    // Strictly validate and update editable profile fields
+    if (name !== undefined) {
+      if (typeof name !== 'string' || name.trim().length < 2) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Name must be at least 2 characters long',
+        });
+      }
+      user.name = name.trim();
+    }
+
+    if (phone !== undefined) {
+      user.phone = typeof phone === 'string' ? phone.trim() : '';
+    }
+
+    if (avatar !== undefined) {
+      user.avatar = typeof avatar === 'string' ? avatar.trim() : '';
+    }
+
+    if (address !== undefined) {
+      user.address = typeof address === 'string' ? address.trim() : '';
+    }
+
+    if (city !== undefined) {
+      user.city = typeof city === 'string' ? city.trim() : '';
+    }
+
+    if (state !== undefined) {
+      user.state = typeof state === 'string' ? state.trim() : '';
+    }
+
+    if (pincode !== undefined) {
+      const cleanPin = typeof pincode === 'string' ? pincode.trim() : String(pincode || '');
+      if (cleanPin && cleanPin.length !== 6) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'Pincode must be exactly 6 digits',
+        });
+      }
+      user.pincode = cleanPin;
+    }
+
+    if (country !== undefined) {
+      user.country = typeof country === 'string' ? country.trim() : 'India';
+    }
+
+    if (preferences && typeof preferences === 'object') {
+      user.preferences = {
+        alertNearbyEvents: preferences.alertNearbyEvents !== undefined ? !!preferences.alertNearbyEvents : (user.preferences?.alertNearbyEvents ?? true),
+        alertCivic: preferences.alertCivic !== undefined ? !!preferences.alertCivic : (user.preferences?.alertCivic ?? true),
+        alertUpdates: preferences.alertUpdates !== undefined ? !!preferences.alertUpdates : (user.preferences?.alertUpdates ?? false),
+      };
+    }
+
+    // Explicitly prevent unauthorized edits to email, password, role through profile endpoint
+    // Save to the actual MongoDB user document
+    await user.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Profile updated successfully',
       user: user.toJSON(),
     });
   } catch (err) {
