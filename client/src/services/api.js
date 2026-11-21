@@ -84,19 +84,10 @@ export async function fetchNearbyEvents(longitude, latitude, radius = 5000) {
  * @returns {Promise<Object>} Created report object
  */
 export async function createReport(reportData) {
-  const response = await fetch('/api/reports', {
+  const result = await request('/api/reports', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(reportData),
   });
-
-  const result = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    throw new Error(result.message || `Failed to submit report (${response.status})`);
-  }
 
   return result.data;
 }

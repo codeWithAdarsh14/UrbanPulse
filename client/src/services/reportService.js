@@ -27,6 +27,30 @@ export async function fetchReportById(id) {
 }
 
 /**
+ * Confirm an existing report
+ * @param {string} id - Report ID
+ * @returns {Promise<Object>} Updated report object
+ */
+export async function confirmReport(id) {
+  const res = await request(`/api/reports/${id}/confirm`, {
+    method: 'POST',
+  });
+  return res.data;
+}
+
+/**
+ * Dispute an existing report
+ * @param {string} id - Report ID
+ * @returns {Promise<Object>} Updated report object
+ */
+export async function disputeReport(id) {
+  const res = await request(`/api/reports/${id}/dispute`, {
+    method: 'POST',
+  });
+  return res.data;
+}
+
+/**
  * Calculates genuine aggregates strictly from real report records
  */
 export async function fetchRealReportMetrics() {
