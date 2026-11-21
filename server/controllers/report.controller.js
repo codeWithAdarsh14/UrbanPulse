@@ -33,14 +33,20 @@ const createReport = async (req, res) => {
   }
 
   try {
-    const report = new Report({
+    const reportData = {
       title,
       description,
       category,
       location,
       images: images || [],
       status: status || 'active'
-    });
+    };
+
+    if (req.user && (req.user.id || req.user._id)) {
+      reportData.createdBy = req.user.id || req.user._id;
+    }
+
+    const report = new Report(reportData);
 
     const saved = await report.save();
 
@@ -193,8 +199,296 @@ const getReportById = async (req, res) => {
   }
 };
 
+// ---------------------------------------------------------------------------
+// POST /api/reports/:id/confirm
+// Confirm an existing report.
+// Rules:
+// - Cannot confirm own report (403)
+// - Cannot confirm more than once (409)
+// - Cannot both confirm and dispute (409)
+// - Concurrency-safe atomic update
+// - Recalculates confidenceScore: (confirmations / (confirmations + disputes)) * 100
+// ---------------------------------------------------------------------------
+const confirmReport = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      status: 'error',
+      message: `"${id}" is not a valid report ID`
+    });
+  }
+
+  const userId = req.user?.id || req.user?._id;
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Access denied. Authentication token required.'
+    });
+  }
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+  const reportObjectId = new mongoose.Types.ObjectId(id);
+
+  try {
+    const existing = await Report.findById(reportObjectId);
+    if (!existing) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Report not found'
+      });
+    }
+
+    // Rule 1: A user cannot confirm their own report
+    if (existing.createdBy && existing.createdBy.toString() === userId.toString()) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'You cannot confirm your own report'
+      });
+    }
+
+    // Rule 2: A user cannot confirm the same report more than once
+    if (existing.confirmations && existing.confirmations.some(uid => uid.toString() === userId.toString())) {
+      return res.status(409).json({
+        status: 'error',
+        message: 'You have already confirmed this report'
+      });
+    }
+
+    // Rule 3: A user cannot both confirm and dispute the same report
+    if (existing.disputes && existing.disputes.some(uid => uid.toString() === userId.toString())) {
+      return res.status(409).json({
+        status: 'error',
+        message: 'You have already disputed this report and cannot confirm it'
+      });
+    }
+
+    // Atomic update preventing concurrent race conditions
+    const updated = await Report.findOneAndUpdate(
+      {
+        _id: reportObjectId,
+        createdBy: { $ne: userObjectId },
+        confirmations: { $ne: userObjectId },
+        disputes: { $ne: userObjectId }
+      },
+      [
+        {
+          $set: {
+            confirmations: {
+              $concatArrays: [
+                { $ifNull: ['$confirmations', []] },
+                [userObjectId]
+              ]
+            }
+          }
+        },
+        {
+          $set: {
+            confidenceScore: {
+              $let: {
+                vars: {
+                  cCount: { $size: { $ifNull: ['$confirmations', []] } },
+                  dCount: { $size: { $ifNull: ['$disputes', []] } }
+                },
+                in: {
+                  $cond: [
+                    { $eq: [{ $add: ['$$cCount', '$$dCount'] }, 0] },
+                    0,
+                    {
+                      $multiply: [
+                        { $divide: ['$$cCount', { $add: ['$$cCount', '$$dCount'] }] },
+                        100
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ],
+      { returnDocument: 'after', updatePipeline: true }
+    );
+
+    if (!updated) {
+      // If atomic query didn't match, inspect current state to return accurate HTTP code
+      const current = await Report.findById(reportObjectId);
+      if (!current) {
+        return res.status(404).json({ status: 'error', message: 'Report not found' });
+      }
+      if (current.createdBy && current.createdBy.toString() === userId.toString()) {
+        return res.status(403).json({ status: 'error', message: 'You cannot confirm your own report' });
+      }
+      if (current.confirmations && current.confirmations.some(uid => uid.toString() === userId.toString())) {
+        return res.status(409).json({ status: 'error', message: 'You have already confirmed this report' });
+      }
+      if (current.disputes && current.disputes.some(uid => uid.toString() === userId.toString())) {
+        return res.status(409).json({ status: 'error', message: 'You have already disputed this report and cannot confirm it' });
+      }
+      return res.status(409).json({ status: 'error', message: 'Conflicting vote detected' });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Report confirmed successfully',
+      data: updated
+    });
+  } catch (err) {
+    console.error('Error confirming report:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to confirm report'
+    });
+  }
+};
+
+// ---------------------------------------------------------------------------
+// POST /api/reports/:id/dispute
+// Dispute an existing report.
+// Rules:
+// - Cannot dispute own report (403)
+// - Cannot dispute more than once (409)
+// - Cannot both confirm and dispute (409)
+// - Concurrency-safe atomic update
+// - Recalculates confidenceScore: (confirmations / (confirmations + disputes)) * 100
+// ---------------------------------------------------------------------------
+const disputeReport = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({
+      status: 'error',
+      message: `"${id}" is not a valid report ID`
+    });
+  }
+
+  const userId = req.user?.id || req.user?._id;
+  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(401).json({
+      status: 'error',
+      message: 'Access denied. Authentication token required.'
+    });
+  }
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+  const reportObjectId = new mongoose.Types.ObjectId(id);
+
+  try {
+    const existing = await Report.findById(reportObjectId);
+    if (!existing) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Report not found'
+      });
+    }
+
+    // Rule 1: A user cannot dispute their own report
+    if (existing.createdBy && existing.createdBy.toString() === userId.toString()) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'You cannot dispute your own report'
+      });
+    }
+
+    // Rule 2: A user cannot dispute the same report more than once
+    if (existing.disputes && existing.disputes.some(uid => uid.toString() === userId.toString())) {
+      return res.status(409).json({
+        status: 'error',
+        message: 'You have already disputed this report'
+      });
+    }
+
+    // Rule 3: A user cannot both confirm and dispute the same report
+    if (existing.confirmations && existing.confirmations.some(uid => uid.toString() === userId.toString())) {
+      return res.status(409).json({
+        status: 'error',
+        message: 'You have already confirmed this report and cannot dispute it'
+      });
+    }
+
+    // Atomic update preventing concurrent race conditions
+    const updated = await Report.findOneAndUpdate(
+      {
+        _id: reportObjectId,
+        createdBy: { $ne: userObjectId },
+        confirmations: { $ne: userObjectId },
+        disputes: { $ne: userObjectId }
+      },
+      [
+        {
+          $set: {
+            disputes: {
+              $concatArrays: [
+                { $ifNull: ['$disputes', []] },
+                [userObjectId]
+              ]
+            }
+          }
+        },
+        {
+          $set: {
+            confidenceScore: {
+              $let: {
+                vars: {
+                  cCount: { $size: { $ifNull: ['$confirmations', []] } },
+                  dCount: { $size: { $ifNull: ['$disputes', []] } }
+                },
+                in: {
+                  $cond: [
+                    { $eq: [{ $add: ['$$cCount', '$$dCount'] }, 0] },
+                    0,
+                    {
+                      $multiply: [
+                        { $divide: ['$$cCount', { $add: ['$$cCount', '$$dCount'] }] },
+                        100
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ],
+      { returnDocument: 'after', updatePipeline: true }
+    );
+
+    if (!updated) {
+      // If atomic query didn't match, inspect current state to return accurate HTTP code
+      const current = await Report.findById(reportObjectId);
+      if (!current) {
+        return res.status(404).json({ status: 'error', message: 'Report not found' });
+      }
+      if (current.createdBy && current.createdBy.toString() === userId.toString()) {
+        return res.status(403).json({ status: 'error', message: 'You cannot dispute your own report' });
+      }
+      if (current.disputes && current.disputes.some(uid => uid.toString() === userId.toString())) {
+        return res.status(409).json({ status: 'error', message: 'You have already disputed this report' });
+      }
+      if (current.confirmations && current.confirmations.some(uid => uid.toString() === userId.toString())) {
+        return res.status(409).json({ status: 'error', message: 'You have already confirmed this report and cannot dispute it' });
+      }
+      return res.status(409).json({ status: 'error', message: 'Conflicting vote detected' });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Report disputed successfully',
+      data: updated
+    });
+  } catch (err) {
+    console.error('Error disputing report:', err);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to dispute report'
+    });
+  }
+};
+
 module.exports = {
   createReport,
+  confirmReport,
+  disputeReport,
   getReports,
   getNearbyReports,
   getReportById
