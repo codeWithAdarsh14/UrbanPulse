@@ -1,4 +1,5 @@
 import React from 'react';
+import NotificationPopUp from '../Notifications/NotificationPopUp';
 import './TopBar.css';
 
 export default function TopBar({
@@ -86,16 +87,8 @@ export default function TopBar({
           <span className="up-location-text">{activeLocationName}</span>
         </div>
 
-        {/* Notification Bell */}
-        <div className="up-notification-bell" title="Notifications" aria-label="Notifications">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span className="up-notification-dot" aria-label="Unread updates">
-            <span className="up-notification-ping" />
-          </span>
-        </div>
+        {/* Notification Bell & Popover */}
+        <NotificationPopUp user={user} onOpenSettings={onOpenSettings} />
 
         {/* User avatar circle */}
         <div
