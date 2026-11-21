@@ -17,6 +17,12 @@ router.post('/login', loginLimiter, authController.login);
 // GET /api/auth/me (authenticated)
 router.get('/me', protect, authController.getMe);
 
+// GET /api/auth/profile (authenticated alias)
+router.get('/profile', protect, authController.getMe);
+
+// PUT /api/auth/profile (authenticated)
+router.put('/profile', protect, authController.updateProfile);
+
 // POST /api/auth/logout
 router.post('/logout', authController.logout);
 
