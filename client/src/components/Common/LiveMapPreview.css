@@ -1,0 +1,359 @@
+/* ============================================================
+   UrbanPulse — Real Geographical Map with Cinematic Camera
+   Uses genuine OpenStreetMap tiles (100% Free, No Watermark, No API Key)
+   ============================================================ */
+
+.up-real-map-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #080C16;
+  overflow: hidden;
+  border-radius: var(--up-radius-lg, 14px);
+  user-select: none;
+  font-family: var(--up-font, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+}
+
+/* Leaflet Canvas Container */
+.up-leaflet-map-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  background: #080C16 !important;
+  z-index: 1;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #080C16 !important;
+  font-family: inherit;
+}
+
+/* 
+   Dark Mode Styling for Standard OpenStreetMap Tiles
+   Inverts light background to dark charcoal while keeping streets,
+   roads, rivers, and geographic labels sharp and clear.
+   ZERO API keys and ZERO watermarks.
+*/
+.up-leaflet-map-canvas .leaflet-tile {
+  filter: brightness(0.55) invert(1) contrast(2.8) hue-rotate(205deg) saturate(0.32) brightness(0.72) !important;
+}
+
+/* Custom attribution pill matching dark dashboard */
+.leaflet-control-attribution {
+  background: rgba(10, 14, 26, 0.85) !important;
+  color: #64748B !important;
+  font-size: 9.5px !important;
+  backdrop-filter: blur(8px);
+  padding: 3px 8px !important;
+  border-radius: 6px 0 0 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.leaflet-control-attribution a {
+  color: #38BDF8 !important;
+  text-decoration: none;
+}
+
+.leaflet-control-attribution a:hover {
+  text-decoration: underline;
+}
+
+/* ════════════════════════════════════════
+   CINEMATIC MARKER & OVERLAYS
+   ════════════════════════════════════════ */
+.up-cine-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.up-cine-anchor {
+  position: relative;
+  width: 32px;
+  height: 42px;
+  cursor: pointer;
+}
+
+/* Teardrop Pin Marker */
+.pin-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.65));
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+}
+
+.pin-marker.marker-in {
+  opacity: 1;
+  transform: scale(1);
+  animation: markerSpringIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.pin-marker.marker-out {
+  opacity: 0;
+  transform: scale(0.3);
+  pointer-events: none;
+}
+
+@keyframes markerSpringIn {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pin-head {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFF;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+}
+
+.pin-point {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  margin-top: -2px;
+}
+
+.pin-svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Event Pin (Violet / Cyan) */
+.event-pin .pin-head {
+  background: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.75);
+}
+.event-pin .pin-point {
+  border-top: 8px solid #3B82F6;
+}
+
+/* Report Pin (Amber / Red) */
+.report-pin .pin-head {
+  background: linear-gradient(135deg, #F97316 0%, #EF4444 100%);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.75);
+}
+.report-pin .pin-point {
+  border-top: 8px solid #EF4444;
+}
+
+/* Pulsating Ripple Rings */
+.up-cine-pulse-ring {
+  position: absolute;
+  top: 17px;
+  left: 17px;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.up-cine-pulse-ring.pulse-active {
+  animation: cinePulseWave 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.up-cine-pulse-ring.event-ring {
+  background: rgba(34, 211, 238, 0.22);
+  border: 1.5px solid rgba(34, 211, 238, 0.7);
+}
+
+.up-cine-pulse-ring.issue-ring {
+  background: rgba(239, 68, 68, 0.22);
+  border: 1.5px solid rgba(239, 68, 68, 0.7);
+}
+
+@keyframes cinePulseWave {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.95; }
+  70% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+/* ════════════════════════════════════════
+   NOTIFICATION POPUP CARD (STEP 6)
+   ════════════════════════════════════════ */
+.up-cine-popup-card {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  background: rgba(14, 20, 36, 0.94);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(124, 58, 237, 0.45);
+  border-radius: 13px;
+  padding: 12px 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(34, 211, 238, 0.2);
+  color: #F8FAFC;
+  pointer-events: auto;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+
+.up-cine-popup-card.popup-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.up-cine-popup-card.popup-hidden {
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  pointer-events: none;
+}
+
+.up-cine-popup-card::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(14, 20, 36, 0.94) transparent transparent transparent;
+}
+
+.up-cine-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.up-cine-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.up-cine-badge--event {
+  background: rgba(34, 211, 238, 0.16);
+  color: #22D3EE;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+}
+
+.up-cine-badge--issue {
+  background: rgba(239, 68, 68, 0.16);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.up-cine-status {
+  font-size: 11px;
+  font-weight: 600;
+}
+.status--event { color: #22D3EE; }
+.status--issue { color: #F87171; }
+
+.up-cine-popup-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 4px;
+  line-height: 1.35;
+}
+
+.up-cine-popup-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-bottom: 5px;
+}
+
+.up-cine-popup-desc {
+  font-size: 11px;
+  color: #CBD5E1;
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+
+.up-cine-popup-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6px;
+  font-size: 10px;
+  color: #64748B;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ════════════════════════════════════════
+   STATUS & TELEMETRY PILLS (NO OVERLAP)
+   ════════════════════════════════════════ */
+.up-real-map-status-pill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #38BDF8;
+  letter-spacing: 0.5px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.up-real-map-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22D3EE;
+  box-shadow: 0 0 8px #22D3EE;
+  animation: pulseDot 1.8s infinite;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+  70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 6px rgba(34, 211, 238, 0); }
+  100% { transform: scale(0.9); opacity: 0.8; box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+}
+
+.up-real-map-bottom-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  background: rgba(10, 14, 26, 0.88);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 10px;
+  color: #94A3B8;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .up-cine-popup-card {
+    width: 220px;
+    padding: 10px 12px;
+  }
+  .up-real-map-status-pill {
+    font-size: 9.5px;
+    padding: 4px 9px;
+    top: 8px;
+    right: 8px;
+  }
+}
