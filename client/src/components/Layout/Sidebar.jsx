@@ -103,8 +103,8 @@ export default function Sidebar({
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
             <defs>
               <linearGradient id="up-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#7838F5" />
-                <stop offset="100%" stopColor="#A855F7" />
+                <stop offset="0%" stopColor="#C62852" />
+                <stop offset="100%" stopColor="#F7A6B7" />
               </linearGradient>
             </defs>
             <rect x="3" y="14" width="5" height="15" rx="1" fill="url(#up-logo-grad)" fillOpacity="0.75" />
@@ -151,7 +151,7 @@ export default function Sidebar({
           <div className="up-sidebar-promo-card">
             <div className="up-promo-header">
               <div className="up-promo-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--up-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
                   <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
                 </svg>

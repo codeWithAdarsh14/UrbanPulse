@@ -1,31 +1,45 @@
 /* ============================================================
-   UrbanPulse 2.0 — Dashboard Styles
-   Theme: Premium Dark Civic-Tech SaaS
-   Palette:
-     bg: #080B18, card: #11172B, surface: #171D35
-     accent: #7838F5, violet: #A855F7, cyan: #22D3EE
-     green: #10B981, amber: #F59E0B, red: #EF4444
-     text: #F8FAFC, text-2: #94A3B8, text-3: #64748B
+   UrbanPulse 2.0 Ã¯Â¿Â½ Dashboard Styles Ã¯Â¿Â½ Rose Crimson Theme
+   Uses global CSS variables from index.css
    ============================================================ */
 
-:root {
-  --dash-bg: #080B18;
-  --dash-card: #11172B;
-  --dash-surface: #171D35;
-  --dash-accent: #7838F5;
-  --dash-violet: #A855F7;
-  --dash-cyan: #22D3EE;
-  --dash-green: #10B981;
-  --dash-amber: #F59E0B;
-  --dash-red: #EF4444;
-  --dash-text: #F8FAFC;
-  --dash-text-2: #94A3B8;
-  --dash-text-3: #64748B;
-  --dash-border: rgba(255, 255, 255, 0.06);
-  --dash-border-glow: rgba(120, 56, 245, 0.3);
+/* -- Bridge dash-* vars to global up-* tokens -- */
+:root,
+[data-theme="dark"] {
+  --dash-bg:          var(--up-bg);
+  --dash-card:        var(--up-card);
+  --dash-surface:     var(--up-surface);
+  --dash-accent:      var(--up-accent);
+  --dash-violet:      var(--up-rose);
+  --dash-cyan:        var(--up-rose);
+  --dash-green:       var(--up-green);
+  --dash-amber:       var(--up-amber);
+  --dash-red:         var(--up-red);
+  --dash-text:        var(--up-text);
+  --dash-text-2:      var(--up-text-2);
+  --dash-text-3:      var(--up-text-3);
+  --dash-border:      var(--up-border);
+  --dash-border-glow: var(--up-accent-border);
 }
 
-/* ── Global Layout Wrapper ── */
+[data-theme="light"] {
+  --dash-bg:          var(--up-bg);
+  --dash-card:        var(--up-card);
+  --dash-surface:     var(--up-surface);
+  --dash-accent:      var(--up-accent);
+  --dash-violet:      var(--up-accent);
+  --dash-cyan:        var(--up-accent);
+  --dash-green:       var(--up-green);
+  --dash-amber:       var(--up-amber);
+  --dash-red:         var(--up-red);
+  --dash-text:        var(--up-text);
+  --dash-text-2:      var(--up-text-2);
+  --dash-text-3:      var(--up-text-3);
+  --dash-border:      var(--up-border);
+  --dash-border-glow: var(--up-accent-border);
+}
+
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Global Layout Wrapper Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-wrapper {
   padding: 24px;
   display: flex;
@@ -38,7 +52,7 @@
   animation: fadeUp 0.4s ease-out;
 }
 
-/* ── Keyframe Animations ── */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Keyframe Animations Ã¢â€â‚¬Ã¢â€â‚¬ */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -107,7 +121,7 @@
   grid-template-columns: 1fr 360px;
   gap: 24px;
   align-items: center;
-  background: linear-gradient(135deg, rgba(17, 23, 43, 0.95), rgba(23, 29, 53, 0.85));
+  background: linear-gradient(135deg, var(--up-card), var(--up-surface));
   position: relative;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -122,7 +136,7 @@
   right: -40px;
   width: 360px;
   height: 360px;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 0%, rgba(120, 56, 245, 0.15) 45%, transparent 70%);
+  background: radial-gradient(circle, rgba(198, 40, 82, 0.2) 0%, rgba(198, 40, 82, 0.08) 45%, transparent 70%);
   filter: blur(48px);
   pointer-events: none;
   animation: glowPulse 7s ease-in-out infinite alternate;
@@ -140,9 +154,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(120, 56, 245, 0.12);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  color: #C084FC;
+  background: var(--up-accent-soft);
+  border: 1px solid var(--up-accent-border);
+  color: var(--up-accent);
   font-size: 12px;
   font-weight: 600;
   padding: 4px 12px;
@@ -156,14 +170,14 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--dash-cyan);
-  box-shadow: 0 0 8px var(--dash-cyan);
+  background: var(--up-accent);
+  box-shadow: 0 0 8px var(--up-accent);
 }
 
 .hero-title {
   font-size: 32px;
   font-weight: 800;
-  background: linear-gradient(135deg, #A855F7 0%, #22D3EE 100%);
+  background: linear-gradient(135deg, var(--up-rose) 0%, var(--up-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1.25;
@@ -188,7 +202,7 @@
 
 /* Large purple gradient button */
 .hero-cta {
-  background: linear-gradient(135deg, #7838F5 0%, #A855F7 100%);
+  background: linear-gradient(135deg, var(--up-accent) 0%, #D63060 100%);
   color: #F8FAFC;
   border: none;
   border-radius: 12px;
@@ -200,12 +214,12 @@
   align-items: center;
   gap: 10px;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(120, 56, 245, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(198, 40, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hero-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(168, 85, 247, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(198, 40, 82, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   filter: brightness(1.05);
 }
 
@@ -214,12 +228,12 @@
 }
 
 .hero-cta--event {
-  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, var(--up-accent) 0%, #D63060 100%);
+  box-shadow: 0 6px 20px rgba(198, 40, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .hero-cta--event:hover {
-  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(198, 40, 82, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .hero-meta-pill {
@@ -252,9 +266,9 @@
   justify-content: center;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--up-border);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  background: #0C1024;
+  background: var(--up-bg);
 }
 
 .mathura-skyline-svg {
@@ -287,7 +301,7 @@
 .stat-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4), 0 0 24px rgba(120, 56, 245, 0.12);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.4), 0 0 24px var(--up-accent-soft);
 }
 
 /* Colored accent line at top (2px) */
@@ -321,9 +335,9 @@
 }
 
 .stat-icon-wrap--purple {
-  background: rgba(120, 56, 245, 0.14);
-  color: #A855F7;
-  border: 1px solid rgba(168, 85, 247, 0.25);
+  background: var(--up-accent-soft);
+  color: var(--up-accent);
+  border: 1px solid var(--up-accent-border);
 }
 
 .stat-icon-wrap--amber {
@@ -339,9 +353,9 @@
 }
 
 .stat-icon-wrap--cyan {
-  background: rgba(34, 211, 238, 0.14);
-  color: #22D3EE;
-  border: 1px solid rgba(34, 211, 238, 0.25);
+  background: var(--up-rose-soft);
+  color: var(--up-rose);
+  border: 1px solid rgba(247, 166, 183, 0.3);
 }
 
 .stat-trend {
@@ -354,8 +368,8 @@
   letter-spacing: 0.05em;
   padding: 3px 8px;
   border-radius: 6px;
-  background: rgba(120, 56, 245, 0.1);
-  color: #C084FC;
+  background: var(--up-accent-soft);
+  color: var(--up-accent);
 }
 
 .stat-badge-tag {
@@ -378,7 +392,7 @@
 }
 
 .stat-badge-tag--cyan {
-  background: rgba(34, 211, 238, 0.12);
+  background: var(--up-rose-soft);
   color: #38BDF8;
 }
 
@@ -443,8 +457,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: var(--up-accent-soft);
+  border: 1px solid var(--up-accent-border);
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -456,8 +470,8 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--dash-cyan);
-  box-shadow: 0 0 8px var(--dash-cyan);
+  background: var(--up-accent);
+  box-shadow: 0 0 8px var(--up-accent);
   animation: livePulse 2s infinite ease-in-out;
 }
 
@@ -502,8 +516,8 @@
 }
 
 .activity-dot--indigo {
-  background: var(--dash-cyan);
-  box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+  background: var(--up-accent);
+  box-shadow: 0 0 8px rgba(247, 166, 183, 0.6);
 }
 
 .activity-icon-box {
@@ -541,7 +555,7 @@
 }
 
 .activity-meta-cat {
-  color: #C084FC;
+  color: var(--up-accent);
   font-weight: 500;
 }
 
@@ -571,7 +585,7 @@
 .reports-filter-tabs {
   display: flex;
   align-items: center;
-  background: #0C1024;
+  background: var(--up-bg);
   padding: 4px;
   border-radius: 12px;
   border: 1px solid var(--dash-border);
@@ -660,7 +674,7 @@
 }
 
 .report-row:hover {
-  background: #171D35;
+  background: var(--up-surface);
 }
 
 .report-status-dot {
@@ -711,9 +725,9 @@
   font-weight: 500;
   padding: 3px 10px;
   border-radius: 8px;
-  background: rgba(120, 56, 245, 0.12);
-  color: #C084FC;
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: var(--up-accent-soft);
+  color: var(--up-accent);
+  border: 1px solid var(--up-accent-border);
   white-space: nowrap;
 }
 
@@ -759,8 +773,8 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--dash-cyan);
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: var(--up-accent-soft);
+  border: 1px solid var(--up-accent-border);
   padding: 4px 12px;
   border-radius: 20px;
 }
@@ -784,13 +798,13 @@
 
 .event-card:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(120, 56, 245, 0.15);
-  border-color: rgba(120, 56, 245, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 24px var(--up-accent-soft);
+  border-color: var(--up-accent-border);
 }
 
 /* Colored gradient header */
 .event-header {
-  background: linear-gradient(135deg, rgba(120, 56, 245, 0.35) 0%, rgba(168, 85, 247, 0.15) 100%);
+  background: linear-gradient(135deg, var(--up-accent-soft), var(--up-rose-soft));
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;
@@ -803,8 +817,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #DDD6FE;
-  background: rgba(120, 56, 245, 0.3);
+  color: var(--up-text);
+  background: var(--up-accent-soft);
   padding: 3px 8px;
   border-radius: 6px;
 }
@@ -888,7 +902,7 @@
 }
 
 .event-expanded-panel {
-  background: rgba(8, 11, 24, 0.6);
+  background: var(--up-bg);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
   padding: 12px;

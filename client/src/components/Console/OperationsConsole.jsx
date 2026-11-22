@@ -41,7 +41,7 @@ export default function OperationsConsole({ user, onLogout, onExitToLanding, onU
   const [aqiData, setAqiData] = useState({
     aqi: null,
     category: 'Unavailable',
-    color: '#94A3B8',
+    color: 'var(--up-text-2)',
     gradient: '#64748B',
     barWidth: '0%',
     stationName: 'Mathura, UP',
@@ -88,7 +88,7 @@ export default function OperationsConsole({ user, onLogout, onExitToLanding, onU
             ...prev,
             aqi: null,
             category: 'Unavailable',
-            color: '#94A3B8',
+            color: 'var(--up-text-2)',
             gradient: '#64748B',
             barWidth: '0%',
             stationName: targetLocation,
@@ -446,7 +446,7 @@ export default function OperationsConsole({ user, onLogout, onExitToLanding, onU
             <button
               type="button"
               className="up-btn up-btn--ghost"
-              style={{ fontSize: '0.82rem', color: '#94A3B8' }}
+              style={{ fontSize: '0.82rem', color: 'var(--up-text-2)' }}
               onClick={onExitToLanding}
             >
               ← Back to UrbanPulse Landing Page

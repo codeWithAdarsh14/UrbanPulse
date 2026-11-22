@@ -312,24 +312,24 @@ export default function DashboardView({
             <defs>
               <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#1E1338" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#080B18" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="var(--up-bg)" stopOpacity="0.2" />
               </linearGradient>
               <linearGradient id="purpleTone" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#A855F7" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#7838F5" stopOpacity="0.2" />
+                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#C62852" stopOpacity="0.2" />
               </linearGradient>
               <linearGradient id="cyanTone" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#0891B2" stopOpacity="0.3" />
+                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#2563EB" stopOpacity="0.3" />
               </linearGradient>
               <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#171D35" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#080B18" stopOpacity="0.9" />
+                <stop offset="0%" stopColor="var(--up-surface)" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="var(--up-bg)" stopOpacity="0.9" />
               </linearGradient>
               <linearGradient id="domeGlow" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.9" />
-                <stop offset="50%" stopColor="#A855F7" stopOpacity="0.7" />
-                <stop offset="100%" stopColor="#7838F5" stopOpacity="0.4" />
+                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.9" />
+                <stop offset="50%" stopColor="#F7A6B7" stopOpacity="0.7" />
+                <stop offset="100%" stopColor="#C62852" stopOpacity="0.4" />
               </linearGradient>
               <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -339,16 +339,16 @@ export default function DashboardView({
 
             {/* Background Sky & Ambient Stars */}
             <rect width="380" height="220" rx="16" fill="url(#skyGrad)" />
-            <circle cx="295" cy="45" r="3" fill="#22D3EE" opacity="0.6" />
-            <circle cx="240" cy="30" r="2" fill="#A855F7" opacity="0.7" />
+            <circle cx="295" cy="45" r="3" fill="#F7A6B7" opacity="0.6" />
+            <circle cx="240" cy="30" r="2" fill="#F7A6B7" opacity="0.7" />
             <circle cx="160" cy="40" r="1.5" fill="#F8FAFC" opacity="0.4" />
-            <circle cx="90" cy="55" r="2" fill="#22D3EE" opacity="0.5" />
+            <circle cx="90" cy="55" r="2" fill="#F7A6B7" opacity="0.5" />
             <circle cx="340" cy="70" r="1.5" fill="#F8FAFC" opacity="0.5" />
 
             {/* Stylized Crescent Moon */}
             <path
               d="M315 28C310 32 308 40 312 47C316 54 324 57 331 54C322 62 306 58 301 47C297 36 304 26 315 28Z"
-              fill="#22D3EE"
+              fill="#F7A6B7"
               opacity="0.85"
               filter="url(#glowFilter)"
             />
@@ -364,10 +364,10 @@ export default function DashboardView({
             <path
               d="M48 180V110H56L68 60L80 110H88V180H48Z"
               fill="rgba(168,85,247,0.35)"
-              stroke="#A855F7"
+              stroke="#F7A6B7"
               strokeWidth="0.75"
             />
-            <line x1="68" y1="60" x2="68" y2="48" stroke="#22D3EE" strokeWidth="1.5" />
+            <line x1="68" y1="60" x2="68" y2="48" stroke="#F7A6B7" strokeWidth="1.5" />
             <path d="M68 48L78 52L68 56Z" fill="#F59E0B" />
 
             {/* Pavilion Chhatri Dome (Mathura Yamuna ghat architecture) */}
@@ -379,25 +379,25 @@ export default function DashboardView({
             />
             <path d="M114 145H138V180H114V145Z" fill="#0C1024" opacity="0.6" />
             {/* Pillars */}
-            <line x1="108" y1="130" x2="108" y2="180" stroke="#7838F5" strokeWidth="2" />
-            <line x1="144" y1="130" x2="144" y2="180" stroke="#7838F5" strokeWidth="2" />
+            <line x1="108" y1="130" x2="108" y2="180" stroke="#C62852" strokeWidth="2" />
+            <line x1="144" y1="130" x2="144" y2="180" stroke="#C62852" strokeWidth="2" />
 
             {/* Grand Main Shikhara (Krishna Janmabhoomi motif) */}
             <path
               d="M175 180V105H185C185 105 196 68 205 52C214 68 225 105 225 105H235V180H175Z"
               fill="rgba(168,85,247,0.4)"
-              stroke="#22D3EE"
+              stroke="#F7A6B7"
               strokeWidth="1"
             />
-            <line x1="205" y1="52" x2="205" y2="38" stroke="#22D3EE" strokeWidth="2" />
+            <line x1="205" y1="52" x2="205" y2="38" stroke="#F7A6B7" strokeWidth="2" />
             <path d="M205 38L218 43L205 48Z" fill="#F59E0B" />
-            <circle cx="205" cy="52" r="3" fill="#22D3EE" />
+            <circle cx="205" cy="52" r="3" fill="#F7A6B7" />
 
             {/* Right Chhatri Pavilion */}
             <path
               d="M255 180V128H263C263 128 270 112 282 112C294 112 301 128 301 128H309V180H255Z"
               fill="rgba(120,56,245,0.45)"
-              stroke="#A855F7"
+              stroke="#F7A6B7"
               strokeWidth="1"
             />
             {/* Small spire on right */}
@@ -406,7 +406,7 @@ export default function DashboardView({
             {/* Front Foreground — Yamuna Riverbank Ghat Steps */}
             <path
               d="M10 180H370V186H10V180ZM18 186H362V192H18V186ZM26 192H354V198H26V192ZM34 198H346V204H34V198Z"
-              fill="#171D35"
+              fill="var(--up-surface)"
               stroke="rgba(255,255,255,0.06)"
               strokeWidth="0.5"
             />
@@ -419,7 +419,7 @@ export default function DashboardView({
               y1="206"
               x2="110"
               y2="206"
-              stroke="#22D3EE"
+              stroke="#F7A6B7"
               strokeWidth="1.5"
               opacity="0.6"
               strokeLinecap="round"
@@ -429,7 +429,7 @@ export default function DashboardView({
               y1="209"
               x2="250"
               y2="209"
-              stroke="#A855F7"
+              stroke="#F7A6B7"
               strokeWidth="1.5"
               opacity="0.5"
               strokeLinecap="round"
@@ -439,7 +439,7 @@ export default function DashboardView({
               y1="205"
               x2="330"
               y2="205"
-              stroke="#22D3EE"
+              stroke="#F7A6B7"
               strokeWidth="1.5"
               opacity="0.4"
               strokeLinecap="round"
@@ -451,9 +451,9 @@ export default function DashboardView({
 
             {/* Smart Civic Streetlights (IoT/Tech accent) */}
             <line x1="88" y1="180" x2="88" y2="152" stroke="#94A3B8" strokeWidth="1.5" />
-            <circle cx="88" cy="152" r="3" fill="#22D3EE" filter="url(#glowFilter)" />
+            <circle cx="88" cy="152" r="3" fill="#F7A6B7" filter="url(#glowFilter)" />
             <line x1="242" y1="180" x2="242" y2="152" stroke="#94A3B8" strokeWidth="1.5" />
-            <circle cx="242" cy="152" r="3" fill="#22D3EE" filter="url(#glowFilter)" />
+            <circle cx="242" cy="152" r="3" fill="#F7A6B7" filter="url(#glowFilter)" />
           </svg>
         </div>
       </section>
@@ -462,7 +462,7 @@ export default function DashboardView({
       <section className="stats-row" aria-label="Key Platform Metrics">
         {/* Card 1: Total Reports (Purple) */}
         <div className="stat-card stat-card--purple">
-          <div className="stat-accent-bar" style={{ background: 'var(--dash-purple, #7838F5)' }} />
+          <div className="stat-accent-bar" style={{ background: 'var(--dash-purple, #C62852)' }} />
           <div className="stat-header">
             <span className="stat-icon-wrap stat-icon-wrap--purple">
               <svg
@@ -552,7 +552,7 @@ export default function DashboardView({
 
         {/* Card 4: Community Events (Cyan) */}
         <div className="stat-card stat-card--cyan">
-          <div className="stat-accent-bar" style={{ background: 'var(--dash-cyan, #22D3EE)' }} />
+          <div className="stat-accent-bar" style={{ background: 'var(--dash-cyan, #F7A6B7)' }} />
           <div className="stat-header">
             <span className="stat-icon-wrap stat-icon-wrap--cyan">
               <svg
@@ -686,7 +686,7 @@ export default function DashboardView({
                         height="16"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#22D3EE"
+                        stroke="#F7A6B7"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
