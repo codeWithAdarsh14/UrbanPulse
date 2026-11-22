@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { request } from '../../services/api';
 import { DASHBOARD_URL } from '../../config/constants';
+import ThemeToggle from '../Layout/ThemeToggle';
 import './Navbar.css';
 
 export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginModal }) {
@@ -56,8 +57,8 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
             <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
               <defs>
                 <linearGradient id="up-nav-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#7C3AED" />
-                  <stop offset="100%" stopColor="#22D3EE" />
+                  <stop offset="0%" stopColor="#C62852" />
+                  <stop offset="100%" stopColor="#F7A6B7" />
                 </linearGradient>
               </defs>
               <rect x="3" y="14" width="5" height="15" rx="1" fill="url(#up-nav-logo-grad)" fillOpacity="0.8" />
@@ -128,7 +129,7 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
                 <button
                   type="button"
                   className="up-nav-link"
-                  style={{ color: '#22D3EE', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  style={{ color: 'var(--up-accent)', display: 'flex', alignItems: 'center', gap: '4px' }}
                   onClick={() => handleNav('app')}
                   title="Go to Live Civic Dashboard"
                 >
@@ -138,7 +139,7 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
                 <button
                   type="button"
                   className="up-nav-link"
-                  style={{ color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  style={{ color: 'var(--up-text-2)', display: 'flex', alignItems: 'center', gap: '4px' }}
                   onClick={() => {
                     if (onOpenLoginModal) onOpenLoginModal();
                     else handleNav('login');
@@ -154,6 +155,9 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
 
         {/* Right Actions */}
         <div className="up-navbar-actions">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Live Status Indicator */}
           <div className="up-health-pill" title={`API Server Status: ${serverStatus}`}>
             <span
@@ -289,7 +293,7 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
             <button
               type="button"
               className="up-mobile-nav-link"
-              style={{ color: '#22D3EE', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left' }}
+              style={{ color: 'var(--up-accent)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left' }}
               onClick={() => handleNav('app')}
             >
               <span>Live Civic Dashboard</span>
@@ -299,7 +303,7 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
             <button
               type="button"
               className="up-mobile-nav-link"
-              style={{ color: '#94A3B8', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left' }}
+              style={{ color: 'var(--up-text-2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', textAlign: 'left' }}
               onClick={() => {
                 setMobileMenuOpen(false);
                 if (onOpenLoginModal) onOpenLoginModal();

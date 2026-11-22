@@ -1,5 +1,5 @@
 /* ==========================================================================
-   UrbanPulse 2.0 - TopBar Styles
+   UrbanPulse 2.0 - TopBar Styles — Rose Crimson Theme
    ========================================================================== */
 
 .up-topbar {
@@ -7,15 +7,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 24px;
-  background: rgba(12, 16, 36, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--up-card);
+  border-bottom: 1px solid var(--up-border);
   position: sticky;
   top: 0;
   z-index: 1100;
   gap: 16px;
   box-sizing: border-box;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 /* ── Search Wrap ── */
@@ -33,22 +32,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94A3B8;
+  color: var(--up-text-3);
   pointer-events: none;
   transition: color 0.2s ease;
 }
 
 .up-search-wrap:focus-within .up-search-icon {
-  color: #A855F7;
+  color: var(--up-accent);
 }
 
 .up-search-input {
   width: 100%;
-  background: rgba(23, 29, 53, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
   border-radius: 10px;
   padding: 9px 38px 9px 40px;
-  color: #F8FAFC;
+  color: var(--up-text);
   font-size: 14px;
   font-family: inherit;
   outline: none;
@@ -57,13 +56,13 @@
 }
 
 .up-search-input::placeholder {
-  color: #64748B;
+  color: var(--up-text-3);
 }
 
 .up-search-input:focus {
-  background: rgba(23, 29, 53, 0.95);
-  border-color: rgba(120, 56, 245, 0.5);
-  box-shadow: 0 0 0 3px rgba(120, 56, 245, 0.1);
+  background: var(--up-surface);
+  border-color: var(--up-accent-border);
+  box-shadow: 0 0 0 3px var(--up-accent-soft);
 }
 
 .up-search-clear-btn {
@@ -74,7 +73,7 @@
   justify-content: center;
   background: transparent;
   border: none;
-  color: #94A3B8;
+  color: var(--up-text-3);
   cursor: pointer;
   padding: 4px;
   border-radius: 50%;
@@ -82,8 +81,8 @@
 }
 
 .up-search-clear-btn:hover {
-  color: #F8FAFC;
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--up-text);
+  background: var(--up-surface);
 }
 
 /* ── TopBar Right ── */
@@ -100,22 +99,20 @@
   align-items: center;
   gap: 7px;
   padding: 7px 14px;
-  background: rgba(23, 29, 53, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
-  color: #F8FAFC;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  color: var(--up-text);
   cursor: default;
   user-select: none;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .up-location-pill:hover {
-  background: rgba(23, 29, 53, 0.9);
-  border-color: rgba(34, 211, 238, 0.3);
+  background: var(--up-surface);
+  border-color: var(--up-accent-border);
 }
 
 .up-location-text {
@@ -127,24 +124,22 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: rgba(23, 29, 53, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--up-surface);
+  border: 1px solid var(--up-border);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   cursor: pointer;
-  color: #94A3B8;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  color: var(--up-text-2);
   transition: all 0.2s ease;
   user-select: none;
 }
 
 .up-notification-bell:hover {
-  background: rgba(23, 29, 53, 0.95);
-  color: #F8FAFC;
-  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--up-surface);
+  color: var(--up-text);
+  border-color: var(--up-accent-border);
 }
 
 /* Notification Dot */
@@ -183,15 +178,15 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7838F5, #A855F7);
+  background: linear-gradient(135deg, var(--up-accent), #D63060);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
   font-weight: 700;
   font-size: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 14px rgba(120, 56, 245, 0.35);
+  border: 2px solid var(--up-accent-border);
+  box-shadow: 0 0 14px rgba(198, 40, 82, 0.35);
   cursor: pointer;
   user-select: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -199,7 +194,7 @@
 
 .up-topbar-avatar:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px rgba(198, 40, 82, 0.5);
 }
 
 /* Responsive adjustments */
@@ -208,8 +203,7 @@
     padding: 10px 14px;
   }
   .up-location-pill {
-    padding: 6px 10px;
-    font-size: 12px;
+    display: none;
   }
   .up-search-input {
     font-size: 13px;

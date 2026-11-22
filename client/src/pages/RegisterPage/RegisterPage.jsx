@@ -85,9 +85,9 @@ export default function RegisterPage({ onNavigate }) {
         <div className="up-auth-header">
           <div className="up-auth-logo-wrap" onClick={() => onNavigate('home')} style={{ cursor: 'pointer' }}>
             <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-              <rect x="3" y="14" width="5" height="15" rx="1" fill="#7C3AED" />
-              <rect x="10" y="6" width="6" height="23" rx="1.5" fill="#A855F7" />
-              <rect x="18" y="11" width="5" height="18" rx="1" fill="#22D3EE" />
+              <rect x="3" y="14" width="5" height="15" rx="1" fill="#C62852" />
+              <rect x="10" y="6" width="6" height="23" rx="1.5" fill="#F7A6B7" />
+              <rect x="18" y="11" width="5" height="18" rx="1" fill="#C62852" />
             </svg>
           </div>
           <h2 className="up-auth-title">Create Citizen Account</h2>

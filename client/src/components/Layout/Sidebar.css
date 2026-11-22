@@ -1,14 +1,14 @@
 /* ==========================================================================
-   UrbanPulse 2.0 - Sidebar Styles
+   UrbanPulse — Sidebar — Luxury Rose Crimson Theme
    ========================================================================== */
 
 .up-sidebar {
   width: 235px;
-  background: #0C1024;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--up-sidebar);
+  border-right: 1px solid var(--up-border);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease, border-color 0.25s ease;
   min-height: 100vh;
   height: 100%;
   position: relative;
@@ -30,8 +30,9 @@
   gap: 12px;
   padding: 20px 16px;
   min-height: 72px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--up-border);
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .up-sidebar.collapsed .up-sidebar-logo-area {
@@ -57,14 +58,14 @@
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #F8FAFC;
+  color: var(--up-text);
   line-height: 1.2;
 }
 
 .up-sidebar-brand-tagline {
   font-size: 10px;
   font-weight: 500;
-  color: #94A3B8;
+  color: var(--up-accent);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-top: 2px;
@@ -74,7 +75,7 @@
 .up-sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   padding: 16px 12px;
   flex: 1;
   overflow-y: auto;
@@ -95,10 +96,10 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: #94A3B8;
+  color: var(--up-text-2);
   background: transparent;
   border: 1px solid transparent;
-  border-left: 2px solid transparent;
+  border-left: 3px solid transparent;
   width: 100%;
   text-align: left;
   font-size: 14px;
@@ -113,7 +114,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-left: 2px solid transparent;
+  border-left: 3px solid transparent;
 }
 
 .up-nav-icon {
@@ -133,29 +134,30 @@
 
 /* Hover (not active) */
 .up-nav-item:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.04);
-  color: #F8FAFC;
+  background: var(--up-accent-soft);
+  color: var(--up-text);
+  border-left-color: rgba(198, 40, 82, 0.3);
 }
 
 .up-nav-item:hover:not(.active) .up-nav-icon {
   transform: translateX(1px);
+  color: var(--up-accent);
 }
 
 /* Active Item */
 .up-nav-item.active {
-  background: linear-gradient(135deg, rgba(120, 56, 245, 0.2), rgba(168, 85, 247, 0.1));
-  border-left: 2px solid #7838F5;
-  color: #F8FAFC;
-  box-shadow: 0 0 20px rgba(120, 56, 245, 0.15) inset;
+  background: var(--up-accent-soft);
+  border-left: 3px solid var(--up-accent);
+  color: var(--up-text);
   font-weight: 600;
 }
 
 .up-sidebar.collapsed .up-nav-item.active {
-  border-left: 2px solid #7838F5;
+  border-left: 3px solid var(--up-accent);
 }
 
 .up-nav-item.active .up-nav-icon {
-  color: #A855F7;
+  color: var(--up-accent);
 }
 
 /* ── Bottom Section ── */
@@ -165,7 +167,8 @@
   flex-direction: column;
   gap: 12px;
   margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--up-border);
+  flex-shrink: 0;
 }
 
 .up-sidebar.collapsed .up-sidebar-bottom {
@@ -175,17 +178,17 @@
 
 /* Promo Card */
 .up-sidebar-promo-card {
-  background: linear-gradient(135deg, rgba(120, 56, 245, 0.22), rgba(168, 85, 247, 0.12));
-  border: 1px solid rgba(168, 85, 247, 0.25);
+  background: linear-gradient(135deg, var(--up-accent-soft), var(--up-rose-soft));
+  border: 1px solid var(--up-accent-border);
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--up-shadow-sm);
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .up-sidebar-promo-card:hover {
   transform: translateY(-1px);
-  border-color: rgba(168, 85, 247, 0.4);
+  border-color: var(--up-accent);
 }
 
 .up-promo-header {
@@ -199,18 +202,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--up-green);
 }
 
 .up-promo-title {
   font-size: 12px;
   font-weight: 600;
-  color: #F8FAFC;
+  color: var(--up-text);
   letter-spacing: -0.01em;
 }
 
 .up-promo-desc {
   font-size: 11px;
-  color: #94A3B8;
+  color: var(--up-text-2);
   line-height: 1.4;
   margin: 0;
 }
@@ -218,7 +222,7 @@
 /* Divider */
 .up-sidebar-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--up-border);
   width: 100%;
 }
 
@@ -239,7 +243,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7838F5, #A855F7);
+  background: linear-gradient(135deg, var(--up-accent), #D63060);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,7 +251,7 @@
   font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(120, 56, 245, 0.35);
+  box-shadow: 0 0 10px rgba(198, 40, 82, 0.3);
 }
 
 .up-sidebar-user-meta {
@@ -261,7 +265,7 @@
 .up-sidebar-user-name {
   font-size: 13px;
   font-weight: 600;
-  color: #F8FAFC;
+  color: var(--up-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -269,7 +273,7 @@
 
 .up-sidebar-user-badge {
   font-size: 10px;
-  color: #22D3EE;
+  color: var(--up-accent);
   font-weight: 500;
 }
 
@@ -281,17 +285,19 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  color: #94A3B8;
+  color: var(--up-text-2);
   padding: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  font-family: inherit;
 }
 
 .up-sidebar-action-btn:hover,
 .up-sidebar-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #F8FAFC;
+  background: var(--up-accent-soft);
+  color: var(--up-accent);
+  border-color: var(--up-accent-border);
 }
 
 .up-collapse-chevron {
@@ -300,4 +306,25 @@
 
 .up-collapse-chevron.rotated {
   transform: rotate(180deg);
+}
+
+/* ── Mobile responsive sidebar ── */
+@media (max-width: 768px) {
+  .up-sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease, width 0.3s ease;
+    box-shadow: var(--up-shadow-lg);
+  }
+
+  .up-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .up-sidebar.collapsed {
+    width: 235px;
+    transform: translateX(-100%);
+  }
 }

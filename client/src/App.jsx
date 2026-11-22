@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import LandingPage from './pages/LandingPage/LandingPage';
@@ -80,7 +81,6 @@ function UrbanPulseRouter() {
     const handlePopState = () => {
       setCurrentPage(getInitialPage());
     };
-
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
@@ -95,41 +95,39 @@ function UrbanPulseRouter() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#080B18',
-          color: '#22D3EE',
+          background: 'var(--up-bg)',
+          color: 'var(--up-accent)',
           fontFamily: 'Inter, system-ui, sans-serif'
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{
               width: '38px',
               height: '38px',
-              border: '3px solid rgba(34, 211, 238, 0.2)',
-              borderTopColor: '#22D3EE',
+              border: '3px solid rgba(198,40,82,0.2)',
+              borderTopColor: '#C62852',
               borderRadius: '50%',
               animation: 'upSpin 1s linear infinite',
               margin: '0 auto 16px'
             }} />
             <style>{`@keyframes upSpin { to { transform: rotate(360deg); } }`}</style>
-            <p style={{ color: '#94A3B8', fontSize: '0.88rem' }}>Verifying Security Clearance...</p>
+            <p style={{ color: 'var(--up-text-2)', fontSize: '0.88rem' }}>Verifying Security Clearance...</p>
           </div>
         </div>
       );
     }
 
-    // Authorization Guard: Only open main app when user is authorized
+    // Authorization Guard
     if (!isAuthenticated) {
       return (
         <div className="up-app-auth-wrapper">
           <AuthGate
-            onLoginSuccess={(authedUser) => {
-              navigate('app');
-            }}
+            onLoginSuccess={() => navigate('app')}
           />
         </div>
       );
     }
 
-    // Authorized User: Render full 3-panel Operations Console
+    // Authorized User: Render full Operations Console
     return (
       <OperationsConsole
         user={user}
@@ -200,8 +198,10 @@ function UrbanPulseRouter() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <UrbanPulseRouter />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <UrbanPulseRouter />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
