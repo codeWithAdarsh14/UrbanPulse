@@ -139,6 +139,7 @@ function UrbanPulseRouter() {
         }}
         onExitToLanding={() => navigate('home')}
         onUpdateUser={updateUser}
+        onNavigate={navigate}
       />
     );
   }
@@ -163,7 +164,7 @@ function UrbanPulseRouter() {
         )}
 
         {currentPage === 'map' && (
-          <MapPage onBackToHome={() => navigate('home')} />
+          <MapPage onBackToHome={() => navigate('home')} onNavigate={navigate} />
         )}
 
         {currentPage === 'login' && (

@@ -4,7 +4,7 @@ import { fetchReports } from '../../services/reportService';
 import { formatDate, truncate } from '../../utils/formatters';
 import './MapPage.css';
 
-export default function MapPage({ onBackToHome }) {
+export default function MapPage({ onBackToHome, onNavigate }) {
   const [reports, setReports] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [filter, setFilter] = useState('all');

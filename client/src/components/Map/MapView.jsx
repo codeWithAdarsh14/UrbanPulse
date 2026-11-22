@@ -15,6 +15,7 @@ import { groupReportsByProximity, calculateSpiderOffsets } from '../../utils/geo
 import { searchLocationsAcrossIndia, reverseGeocodeLocation, POPULAR_INDIAN_HUBS } from '../../services/geocoding';
 import { GLA_CAMPUS_LANDMARKS, GLA_CAMPUS_CENTER } from '../../data/campusLandmarks';
 import GroupedReportPopup from './GroupedReportPopup';
+import ReportVoteControls from './ReportVoteControls';
 import ReportModal from '../ReportModal/ReportModal';
 import EventModal from '../EventModal/EventModal';
 import './MapView.css';
@@ -166,7 +167,11 @@ export default function MapView({
   lastSubmittedReport,
   lastSubmittedEvent,
   focusSearchTrigger,
+  onNavigate,
+  onLoginClick,
 }) {
+  const handleLoginClick = onLoginClick || (onNavigate ? () => onNavigate('login') : undefined);
+
   // Modal state (controlled or uncontrolled fallback)
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isReportModalOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
@@ -330,6 +335,16 @@ export default function MapView({
       setMapZoom(15);
     }
   }, [lastSubmittedEvent]);
+
+  /* ── Synchronize report vote updates reactively ── */
+  const handleReportVoteSuccess = useCallback((updatedReport) => {
+    if (!updatedReport || !updatedReport._id) return;
+    setReports((prevReports) =>
+      prevReports.map((r) =>
+        r._id === updatedReport._id ? { ...r, ...updatedReport } : r
+      )
+    );
+  }, []);
 
   /* ── Geolocation & Automatic current-location detection ── */
   const requestLocation = useCallback(() => {
@@ -1055,7 +1070,7 @@ export default function MapView({
                   position={[lat, lng]}
                   icon={reportIcon}
                 >
-                  <Popup>
+                  <Popup minWidth={240} maxWidth={320}>
                     <div className="popup-container">
                       <div className="popup-header">
                         <h4 className="popup-title">{report.title}</h4>
@@ -1077,6 +1092,11 @@ export default function MapView({
                       {report.createdAt && (
                         <div className="popup-footer">Reported: {formatDate(report.createdAt)}</div>
                       )}
+                      <ReportVoteControls
+                        report={report}
+                        onVoteSuccess={handleReportVoteSuccess}
+                        onLoginClick={handleLoginClick}
+                      />
                     </div>
                   </Popup>
                 </Marker>
@@ -1094,6 +1114,8 @@ export default function MapView({
                         formatDate={formatDate}
                         isSpiderfied={true}
                         onToggleSpiderfy={() => toggleSpiderfy(group.id)}
+                        onReportUpdate={handleReportVoteSuccess}
+                        onLoginClick={handleLoginClick}
                       />
                     </Popup>
                   </Marker>
@@ -1126,6 +1148,11 @@ export default function MapView({
                                 )}
                               </div>
                               <p className="popup-desc">{report.description}</p>
+                              <ReportVoteControls
+                                report={report}
+                                onVoteSuccess={handleReportVoteSuccess}
+                                onLoginClick={handleLoginClick}
+                              />
                             </div>
                           </Popup>
                         </Marker>
@@ -1144,6 +1171,8 @@ export default function MapView({
                     formatDate={formatDate}
                     isSpiderfied={false}
                     onToggleSpiderfy={() => toggleSpiderfy(group.id)}
+                    onReportUpdate={handleReportVoteSuccess}
+                    onLoginClick={handleLoginClick}
                   />
                 </Popup>
               </Marker>

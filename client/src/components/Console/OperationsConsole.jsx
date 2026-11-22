@@ -13,7 +13,7 @@ import '../../App.css';
  * OperationsConsole — Full Civic Operations & Intelligence Console
  * Renders the 3-panel operations dashboard when the user is authorized.
  */
-export default function OperationsConsole({ user, onLogout, onExitToLanding, onUpdateUser }) {
+export default function OperationsConsole({ user, onLogout, onExitToLanding, onUpdateUser, onNavigate }) {
   // Navigation state: 'dashboard' | 'map' | 'report' | 'events' | 'my-reports'
   const [activeNav, setActiveNav] = useState('dashboard');
 
@@ -226,6 +226,8 @@ export default function OperationsConsole({ user, onLogout, onExitToLanding, onU
               lastSubmittedReport={lastSubmittedReport}
               lastSubmittedEvent={lastSubmittedEvent}
               focusSearchTrigger={focusLocationSearchTrigger}
+              onNavigate={onNavigate}
+              onLoginClick={onNavigate ? () => onNavigate('login') : undefined}
             />
           )}
 

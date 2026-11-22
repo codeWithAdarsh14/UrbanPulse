@@ -4,11 +4,15 @@
  * independently readable cards in a scrollable container.
  */
 
+import ReportVoteControls from './ReportVoteControls';
+
 export default function GroupedReportPopup({
   reports,
   formatDate,
   isSpiderfied,
   onToggleSpiderfy,
+  onReportUpdate,
+  onLoginClick,
 }) {
   const count = reports.length;
 
@@ -66,6 +70,12 @@ export default function GroupedReportPopup({
             </div>
 
             <p className="report-card-desc">{report.description}</p>
+
+            <ReportVoteControls
+              report={report}
+              onVoteSuccess={onReportUpdate}
+              onLoginClick={onLoginClick}
+            />
           </div>
         ))}
       </div>

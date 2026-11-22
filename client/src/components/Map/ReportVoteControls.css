@@ -1,0 +1,269 @@
+/* ===========================================================
+   REPORT VOTE CONTROLS (Confirm / Dispute Civic Verification)
+   =========================================================== */
+
+.report-vote-controls {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--up-border, rgba(255, 255, 255, 0.08));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: inherit;
+}
+
+/* -- Metrics Row: Confirmations, Disputes, Confidence -- */
+.vote-metrics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 11px;
+  background: var(--up-bg-3, rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--up-border, rgba(255, 255, 255, 0.06));
+  border-radius: var(--up-r-sm, 6px);
+  padding: 5px 8px;
+}
+
+.vote-metric-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.metric-label {
+  color: var(--up-text, #94A3B8);
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.metric-val {
+  font-weight: 700;
+}
+
+.val-confirm {
+  color: var(--up-green, #10B981);
+}
+
+.val-dispute {
+  color: var(--up-red, #EF4444);
+}
+
+.val-confidence {
+  color: var(--up-teal, #22D3EE);
+}
+
+.val-muted {
+  color: var(--up-text, #94A3B8);
+  font-size: 10px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* -- Action Buttons Row -- */
+.vote-buttons-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-vote {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: var(--up-r-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-vote.btn-confirm {
+  background: var(--up-green-bg, rgba(16, 185, 129, 0.12));
+  color: var(--up-green, #10B981);
+  border: 1px solid var(--up-green-bdr, rgba(16, 185, 129, 0.3));
+}
+
+.btn-vote.btn-confirm:hover:not(:disabled) {
+  background: #10B981;
+  color: #FFFFFF;
+  border-color: #10B981;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+}
+
+.btn-vote.btn-dispute {
+  background: var(--up-red-bg, rgba(239, 68, 68, 0.12));
+  color: var(--up-red, #EF4444);
+  border: 1px solid var(--up-red-bdr, rgba(239, 68, 68, 0.3));
+}
+
+.btn-vote.btn-dispute:hover:not(:disabled) {
+  background: #EF4444;
+  color: #FFFFFF;
+  border-color: #EF4444;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3);
+}
+
+.btn-vote:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-vote.is-loading {
+  cursor: wait;
+}
+
+/* -- Inline Mini Spinner -- */
+.vote-btn-spinner {
+  width: 11px;
+  height: 11px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: vote-spin 0.75s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes vote-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* -- State Boxes (Logged out, Creator, Voted, Loading) -- */
+.vote-state-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--up-r-sm, 6px);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.vote-state-text {
+  margin: 0;
+  color: var(--up-text, #94A3B8);
+}
+
+/* State: Auth loading */
+.vote-state-auth-loading {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--up-border, rgba(255, 255, 255, 0.08));
+  color: var(--up-text, #94A3B8);
+  font-size: 11px;
+  justify-content: center;
+}
+
+/* State 2: Logged out */
+.vote-state-logged-out {
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  justify-content: space-between;
+}
+
+.btn-vote-login {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  background: var(--up-teal, #22D3EE);
+  color: #080B18 !important;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-vote-login:hover {
+  opacity: 0.9;
+}
+
+/* State 3: Report creator */
+.vote-state-creator {
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: var(--up-text, #94A3B8);
+}
+
+.vote-info-icon {
+  font-size: 13px;
+  color: var(--up-teal, #22D3EE);
+  flex-shrink: 0;
+}
+
+/* States 4 & 5: Already voted */
+.vote-state-voted {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 7px 10px;
+}
+
+.vote-voted-confirm {
+  background: var(--up-green-bg, rgba(16, 185, 129, 0.08));
+  border: 1px solid var(--up-green-bdr, rgba(16, 185, 129, 0.25));
+}
+
+.vote-voted-dispute {
+  background: var(--up-red-bg, rgba(239, 68, 68, 0.08));
+  border: 1px solid var(--up-red-bdr, rgba(239, 68, 68, 0.25));
+}
+
+.vote-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pill-confirmed {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  color: var(--up-green, #10B981);
+}
+
+.pill-disputed {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: var(--up-red, #EF4444);
+}
+
+/* -- Feedback Banners (States 7 & 8) -- */
+.vote-feedback {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.vote-feedback .feedback-icon {
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.vote-feedback-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: var(--up-green, #10B981);
+}
+
+.vote-feedback-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--up-red, #EF4444);
+}
