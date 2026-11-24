@@ -1,40 +1,117 @@
-# UrbanPulse (V1)
+# UrbanPulse
 
-UrbanPulse is a full-stack web application designed for civic monitoring and urban intelligence.
+**A Civic Intelligence & Urban Monitoring Platform**
+
+UrbanPulse is a full-stack web application designed to connect citizens with their urban environment through geospatial civic issue reporting, community event discovery, and city-level monitoring tools.
+
+The platform combines an interactive map interface with a REST API and MongoDB-backed data storage to make civic information easier to explore and manage.
 
 ---
 
-## 🏛 Architecture Overview
+## ✨ Features
 
-The project is structured as a decoupled monorepo containing distinct frontend (`client/`) and backend (`server/`) environments:
+### 🗺️ Interactive Civic Map
+- Interactive maps powered by **Leaflet** and **OpenStreetMap**.
+- Geographical visualization of civic reports and community events.
+- Location-based data using GeoJSON coordinates.
+- Nearby report and event discovery through geospatial queries.
 
-- **Frontend (`client/`)**: Built with **React** powered by **Vite** (JavaScript / JSX). Configured with a built-in development proxy to communicate seamlessly with the backend API.
-- **Backend (`server/`)**: Built with **Node.js** and **Express** (CommonJS). Configured for modular routing, controllers, configuration management, and environment variable loading.
+### 📢 Civic Issue Reporting
+- Submit civic reports with a title, description, category, and geographical location.
+- Support for report image references.
+- Track report status.
+- Confirm or dispute reports through authenticated API endpoints.
+- Retrieve reports through paginated and location-based endpoints.
 
-```
+### 🎉 Community Events
+- Create and explore community events.
+- Store event descriptions, categories, venues, locations, and schedules.
+- Retrieve events using pagination.
+- Discover events near geographical coordinates.
+
+### 🔐 Authentication & User Profiles
+- User registration and login.
+- JWT-based authentication.
+- Password hashing with bcrypt.
+- Protected profile endpoints.
+- Profile information updates.
+- Login and registration rate limiting.
+- Client-side input validation and login-attempt protection.
+
+### 🌍 City Monitoring
+- Operations console and civic overview interface.
+- Civic statistics and report metrics.
+- Air Quality Index data retrieval through the Open-Meteo Air Quality API.
+- Location lookup and geospatial utilities.
+
+### 🎨 User Interface
+- Responsive React interface.
+- Light and dark theme support.
+- Landing, login, registration, and map pages.
+- Dashboard navigation and protected application access.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, JavaScript, JSX |
+| Build Tool | Vite 8 |
+| Mapping | Leaflet, React Leaflet, OpenStreetMap |
+| Backend | Node.js, Express 4 |
+| Database | MongoDB, Mongoose |
+| Authentication | JSON Web Tokens (JWT) |
+| Password Security | bcryptjs |
+| API Protection | express-rate-limit |
+| Configuration | dotenv |
+| Air Quality Data | Open-Meteo Air Quality API |
+
+---
+
+## 🏗️ Project Architecture
+
+UrbanPulse follows a separated frontend/backend architecture.
+
+```text
 UrbanPulse/
-├── client/                     # Vite + React Frontend Application
-│   ├── public/                 # Static assets
-│   ├── src/                    # React components, styles, and logic
-│   ├── .gitignore              # Client-specific Git ignore rules
-│   ├── index.html              # HTML entry point
-│   ├── package.json            # Client dependencies and scripts
-│   └── vite.config.js          # Vite configuration with dev proxy
-├── server/                     # Node.js + Express Backend API
-│   ├── config/                 # Configuration modules (e.g., db, loggers)
-│   ├── controllers/            # Request handlers (e.g., health.controller.js)
-│   ├── middleware/             # Express middlewares
-│   ├── models/                 # Data schemas/models
-│   ├── routes/                 # Route declarations (e.g., health.routes.js)
-│   ├── services/               # Core business logic services
-│   ├── utils/                  # Helper utilities and shared functions
-│   ├── .env.example            # Backend environment variable template
-│   ├── .gitignore              # Server-specific Git ignore rules
-│   ├── package.json            # Server dependencies and scripts
-│   └── server.js               # Express application entrypoint
-├── .gitignore                  # Root Git ignore rules (node_modules, .env, build output)
-└── README.md                   # Project documentation
+│
+├── client/                         # Primary React frontend
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       │   ├── Auth/
+│       │   ├── Console/
+│       │   ├── Features/
+│       │   ├── Footer/
+│       │   ├── Navbar/
+│       │   └── Statistics/
+│       │
+│       ├── context/                 # Authentication and theme state
+│       ├── pages/                   # Application pages
+│       ├── services/                # API and data services
+│       ├── utils/                   # Validation and helper functions
+│       ├── App.jsx
+│       └── index.css
+│
+├── server/                          # Express backend
+│   ├── config/                      # Database configuration
+│   ├── controllers/                 # API request handlers
+│   ├── middleware/                  # Authentication and rate limiting
+│   ├── models/                      # Mongoose models
+│   ├── routes/                      # API route definitions
+│   ├── services/
+│   ├── utils/
+│   ├── .env.example
+│   ├── package.json
+│   └── server.js
+│
+├── urbanpulse-new-ui/               # Additional frontend implementation
+│
+└── README.md
 ```
+
+> `client/` is the primary frontend documented in the existing project README. `urbanpulse-new-ui/` is a separate frontend implementation with its own package configuration. The instructions below use `client/`.
 
 ---
 
@@ -42,126 +119,273 @@ UrbanPulse/
 
 ### Prerequisites
 
-- **Node.js**: v18.0.0 or later (v24+ recommended)
-- **npm**: v9.0.0 or later
+Install the following before running the project:
 
----
+- Node.js (use a version compatible with Vite 8)
+- npm
+- MongoDB Atlas account or an accessible MongoDB deployment
+- Git
 
-### 1. Server Setup
+### 1. Clone the repository
 
-Navigate into the `server/` directory:
+```bash
+git clone https://github.com/codeWithAdarsh14/UrbanPulse.git
+cd UrbanPulse
+```
+
+### 2. Configure the backend
+
+Open a terminal:
 
 ```bash
 cd server
 npm install
 ```
 
-#### Environment Configuration
+Create your environment file:
 
-Copy the example environment file:
+**Windows PowerShell**
+```powershell
+Copy-Item .env.example .env
+```
 
+**macOS / Linux**
 ```bash
-# On Windows PowerShell
-cp .env.example .env
-
-# On Linux / macOS / Bash
 cp .env.example .env
 ```
 
-Default variables defined in `server/.env.example`:
+### 3. Configure environment variables
 
-| Variable | Default Value | Description |
-| :--- | :--- | :--- |
-| `PORT` | `5000` | Port for the Express HTTP server |
-| `NODE_ENV` | `development` | Runtime environment (`development`, `production`, `test`) |
-| `CLIENT_URL` | `http://localhost:5173` | Allowed origin for Cross-Origin Resource Sharing (CORS) |
+Open `server/.env` and configure the following values:
 
-#### Running the Server
+| Variable | Purpose |
+|---|---|
+| `PORT` | Backend server port. Default: `5000` |
+| `NODE_ENV` | Runtime environment. Default: `development` |
+| `CLIENT_URL` | Frontend origin used for CORS |
+| `MONGODB_URI` | MongoDB connection string. Required |
+| `DNS_SERVERS` | Optional comma-separated DNS server addresses |
 
-- **Development mode** (auto-reloading with native Node `--watch`):
-  ```bash
-  npm run dev
-  ```
-- **Production mode**:
-  ```bash
-  npm start
-  ```
+Example:
 
-The server starts by default on `http://localhost:5000`.
+```env
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:5173
 
----
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/auth
 
-### 2. Client Setup
+DNS_SERVERS=
+```
 
-Open a separate terminal window and navigate into the `client/` directory:
+The database configuration also accepts `MONGO_URI` as an alternative to `MONGODB_URI`.
+
+**Important security configuration:** The authentication controller reads `JWT_SECRET` and `JWT_EXPIRES_IN`. Configure a strong, private `JWT_SECRET` in your local environment, and never commit it to Git. The current `.env.example` does not list these two variables.
+
+### 4. Start the backend
+
+From the `server/` directory:
+
+```bash
+npm run dev
+```
+
+For normal startup:
+
+```bash
+npm start
+```
+
+The backend uses port `5000` by default.
+
+### 5. Start the frontend
+
+Open a second terminal:
 
 ```bash
 cd client
 npm install
+npm run dev
 ```
 
-#### Running the Client
+Open the Vite development URL:
 
-- **Development mode**:
-  ```bash
-  npm run dev
-  ```
-- **Production build check**:
-  ```bash
-  npm run build
-  ```
+```text
+http://localhost:5173
+```
 
-The client will be accessible at `http://localhost:5173`.
+### 6. Build the frontend
 
----
+To create a production frontend build:
 
-## 🔌 API & Development Proxy
+```bash
+cd client
+npm run build
+```
 
-### Health Check Endpoint
+To preview the generated build locally:
 
-- **Endpoint**: `GET /api/health`
-- **Port**: `5000` (Direct) or `5173` (Proxied through Vite)
-- **Sample Response**:
-  ```json
-  {
-    "status": "ok",
-    "message": "UrbanPulse API is operational",
-    "timestamp": "2026-10-14T05:01:44.229Z",
-    "uptime": 10.56
-  }
-  ```
+```bash
+npm run preview
+```
 
-### Development Proxy Approach
+To run the frontend linter:
 
-To ensure smooth client-server interaction during development and prevent CORS issues when consuming endpoints:
-- `client/vite.config.js` defines a local reverse proxy on `/api`:
-  ```javascript
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  }
-  ```
-- When the frontend requests `/api/health`, Vite forwards the request to `http://localhost:5000/api/health`.
-- Both frontend and backend can also be operated completely independently without cross-dependency.
+```bash
+npm run lint
+```
 
 ---
 
-## 📦 Installed Dependencies
+## 🔌 API Documentation
 
-To maintain a lean Day 1 baseline, only essential dependencies have been installed:
+The backend exposes REST endpoints under the `/api` prefix.
 
-### Backend (`server/`)
-- `express`: Core web application framework for routing and middleware.
-- `cors`: Cross-Origin Resource Sharing middleware for client communication.
-- `dotenv`: Loads environment variables from `.env` files.
-*(Development reloading uses Node's native `--watch` mode to avoid dependency bloat and security vulnerabilities).*
+### Health
 
-### Frontend (`client/`)
-- `react` & `react-dom`: Component rendering and state management.
-- `vite` & `@vitejs/plugin-react`: Fast modern build tool and dev server.
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/health` | Check API and database connection status |
+
+### Authentication
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| POST | `/api/auth/register` | Register a user | Public |
+| POST | `/api/auth/login` | Authenticate a user | Public |
+| GET | `/api/auth/me` | Get authenticated user | Protected |
+| GET | `/api/auth/profile` | Get authenticated profile | Protected |
+| PUT | `/api/auth/profile` | Update authenticated profile | Protected |
+| POST | `/api/auth/logout` | Logout response endpoint | Public |
+
+### Civic Reports
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| POST | `/api/reports` | Create a civic report | Protected |
+| GET | `/api/reports` | Retrieve paginated reports | Public |
+| GET | `/api/reports/nearby` | Find nearby reports | Public |
+| GET | `/api/reports/:id` | Retrieve a report by ID | Public |
+| POST | `/api/reports/:id/confirm` | Confirm a report | Protected |
+| POST | `/api/reports/:id/dispute` | Dispute a report | Protected |
+
+### Community Events
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| POST | `/api/events` | Create an event | Public |
+| GET | `/api/events` | Retrieve paginated events | Public |
+| GET | `/api/events/nearby` | Find nearby events | Public |
+| GET | `/api/events/:id` | Retrieve an event by ID | Public |
+
+### User Profiles
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| GET | `/api/users/profile` | Retrieve authenticated profile | Protected |
+| PUT | `/api/users/profile` | Update authenticated profile | Protected |
+
+**Protected endpoints** require a valid JWT access token in the request header:
+
+```http
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+### Example: Health Check
+
+```http
+GET http://localhost:5000/api/health
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "message": "UrbanPulse API is operational",
+  "timestamp": "2026-01-01T10:00:00.000Z",
+  "uptime": 120,
+  "database": {
+    "status": "connected",
+    "ready": true
+  }
+}
+```
+
+The timestamp and uptime values are generated at runtime.
+
+---
+
+## 📍 Geospatial Data Format
+
+Reports and events use GeoJSON Point coordinates.
+
+Example:
+
+```json
+{
+  "type": "Point",
+  "coordinates": [77.6737, 27.4924]
+}
+```
+
+**Coordinate order matters:**
+
+- First value: Longitude
+- Second value: Latitude
+
+The backend uses MongoDB geospatial queries to retrieve nearby reports and events.
+
+---
+
+## 🔒 Security
+
+The project includes several authentication and API protection mechanisms:
+
+- Password hashing with bcryptjs.
+- JWT-based authentication middleware.
+- Protected user profile and report operations.
+- Login and registration rate limiting.
+- Client-side validation and login-attempt lockout.
+- Environment-based database configuration.
+
+For production deployment, configure a secure JWT secret, restrict CORS to trusted origins, and keep database credentials outside source control.
+
+---
+
+## 🧭 Development Notes
+
+- The frontend and backend run independently in separate terminals.
+- The backend uses CommonJS modules.
+- The frontend uses ES modules.
+- MongoDB connectivity is required for database-backed operations.
+- The backend health endpoint reports both API status and database readiness.
+- The frontend uses API service modules to communicate with backend endpoints.
+
+---
+
+## 📌 Current Project Scope
+
+UrbanPulse includes civic reporting, geospatial discovery, community events, authentication, user profiles, and city-monitoring interface components.
+
+Some interface elements and dashboard statistics may be illustrative or dependent on external data availability. A displayed metric should not automatically be interpreted as a verified live municipal measurement.
+
+---
+
+## 👨‍💻 Author
+
+**Adarsh Singh**
+
+GitHub: [@codeWithAdarsh14](https://github.com/codeWithAdarsh14)
+
+Project: [UrbanPulse](https://github.com/codeWithAdarsh14/UrbanPulse)
+
+---
+
+## 📄 License
+
+This project currently declares the **ISC** license in the backend package configuration. Refer to the repository's license file, if present, for the definitive project-wide licensing terms.
+
+---
+
+*UrbanPulse — Making cities more connected, informed, and responsive.*
