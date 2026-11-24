@@ -32,21 +32,12 @@
   cursor: pointer;
 }
 
-.up-brand-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--up-radius-md);
-  background: var(--up-surface);
-  border: 1px solid var(--up-border);
-  box-shadow: 0 0 15px var(--up-accent-soft);
-}
-
-.up-brand-text {
-  display: flex;
-  flex-direction: column;
+.up-navbar-logo-img {
+  height: 52px;
+  max-width: 210px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 12px var(--up-accent-soft));
 }
 
 .up-brand-name {

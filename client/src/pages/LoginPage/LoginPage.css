@@ -5,17 +5,19 @@
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  background: radial-gradient(circle at 50% 30%, rgba(198, 40, 82, 0.12) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 30%, var(--up-accent-soft) 0%, transparent 60%);
 }
 
 .up-auth-card {
   width: 100%;
   max-width: 440px;
-  background: var(--up-card);
+  background: var(--up-glass-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--up-border);
-  border-radius: var(--up-radius-2xl, 24px);
+  border-radius: var(--up-r-2xl);
   padding: 40px 36px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(198, 40, 82, 0.15);
+  box-shadow: var(--up-shadow-lg);
   position: relative;
 }
 
@@ -25,29 +27,38 @@
 }
 
 .up-auth-logo-wrap {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 16px;
-  border-radius: var(--up-radius-md);
-  background: var(--up-surface);
-  border: 1px solid var(--up-border);
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  margin: 0 auto 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px var(--up-purple-glow);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.up-auth-logo-img {
+  width: 100%;
+  height: auto;
+  max-height: 64px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 14px var(--up-accent-soft));
 }
 
 .up-auth-title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #FFF;
+  color: var(--up-text);
   margin-bottom: 6px;
   letter-spacing: -0.5px;
 }
 
 .up-auth-sub {
   font-size: 0.92rem;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
 }
 
 /* Form */
@@ -66,7 +77,7 @@
 .up-form-label {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #E2E8F0;
+  color: var(--up-text);
   display: flex;
   justify-content: space-between;
 }
@@ -80,7 +91,7 @@
 .up-input-icon {
   position: absolute;
   left: 14px;
-  color: var(--up-text-muted);
+  color: var(--up-text-3);
   pointer-events: none;
 }
 
@@ -89,16 +100,16 @@
   height: 46px;
   background: var(--up-surface);
   border: 1px solid var(--up-border);
-  border-radius: var(--up-radius-md);
+  border-radius: var(--up-r-md);
   padding: 0 14px 0 42px;
-  color: #FFF;
+  color: var(--up-text);
   font-size: 0.92rem;
   transition: all 0.2s ease;
 }
 
 .up-input:focus {
-  border-color: var(--up-purple-primary);
-  box-shadow: 0 0 12px var(--up-purple-glow);
+  border-color: var(--up-accent);
+  box-shadow: 0 0 12px var(--up-accent-soft);
   outline: none;
 }
 
@@ -111,7 +122,7 @@
   right: 12px;
   background: none;
   border: none;
-  color: var(--up-text-muted);
+  color: var(--up-text-3);
   cursor: pointer;
   padding: 4px;
   display: flex;
@@ -120,7 +131,7 @@
 }
 
 .up-password-toggle:hover {
-  color: #FFF;
+  color: var(--up-text);
 }
 
 .up-form-options {
@@ -134,12 +145,12 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
   cursor: pointer;
 }
 
 .up-forgot-link {
-  color: var(--up-cyan-accent);
+  color: var(--up-accent);
   background: none;
   border: none;
   cursor: pointer;
@@ -154,7 +165,7 @@
 /* Alert Banners */
 .up-auth-alert {
   padding: 12px 14px;
-  border-radius: var(--up-radius-md);
+  border-radius: var(--up-r-md);
   font-size: 0.86rem;
   display: flex;
   align-items: flex-start;
@@ -163,32 +174,32 @@
 }
 
 .up-auth-alert--error {
-  background: var(--up-error-soft);
+  background: var(--up-red-bg);
   border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #FCA5A5;
+  color: var(--up-red);
 }
 
 .up-auth-alert--success {
-  background: var(--up-success-soft);
+  background: var(--up-green-bg);
   border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #6EE7B7;
+  color: var(--up-green);
 }
 
 .up-auth-alert--warning {
-  background: var(--up-warning-soft);
+  background: var(--up-amber-bg);
   border: 1px solid rgba(245, 158, 11, 0.35);
-  color: #FCD34D;
+  color: var(--up-amber);
 }
 
 .up-auth-footer-link {
   text-align: center;
   margin-top: 24px;
   font-size: 0.88rem;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
 }
 
 .up-auth-footer-link button {
-  color: var(--up-cyan-accent);
+  color: var(--up-accent);
   font-weight: 600;
   cursor: pointer;
   margin-left: 6px;
