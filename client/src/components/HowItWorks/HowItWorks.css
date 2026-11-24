@@ -15,11 +15,12 @@
   font-weight: 800;
   letter-spacing: -0.8px;
   margin-bottom: 14px;
+  color: var(--up-text);
 }
 
 .up-hiw-desc {
   font-size: 1.05rem;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
 }
 
 .up-hiw-steps {
@@ -30,21 +31,24 @@
 }
 
 .up-hiw-step-card {
-  background: var(--up-card);
+  background: var(--up-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--up-border);
-  border-radius: var(--up-radius-xl);
+  border-radius: var(--up-r-xl);
   padding: 36px 28px;
   display: flex;
   flex-direction: column;
   position: relative;
   transition: all 0.28s ease;
   overflow: hidden;
+  box-shadow: var(--up-shadow-sm);
 }
 
 .up-hiw-step-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(124, 58, 237, 0.45);
-  box-shadow: var(--up-shadow-elevated);
+  border-color: var(--up-accent-border);
+  box-shadow: var(--up-shadow-md), 0 0 20px var(--up-accent-soft);
 }
 
 .up-hiw-step-number {
@@ -54,14 +58,14 @@
   font-size: 3.5rem;
   font-weight: 900;
   font-family: var(--up-font-mono);
-  color: rgba(255, 255, 255, 0.04);
+  color: var(--up-accent-soft);
   line-height: 1;
 }
 
 .up-hiw-icon-box {
   width: 58px;
   height: 58px;
-  border-radius: var(--up-radius-lg);
+  border-radius: var(--up-r-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,34 +74,34 @@
 }
 
 .up-hiw-icon-box--purple {
-  background: var(--up-purple-soft);
-  color: #C084FC;
-  box-shadow: 0 0 20px var(--up-purple-glow);
+  background: var(--up-accent-soft);
+  color: var(--up-accent);
+  box-shadow: 0 0 20px var(--up-accent-soft);
 }
 
 .up-hiw-icon-box--cyan {
-  background: var(--up-cyan-soft);
-  color: var(--up-cyan-accent);
-  box-shadow: 0 0 20px var(--up-cyan-glow);
+  background: var(--up-rose-soft);
+  color: var(--up-rose);
+  box-shadow: 0 0 20px var(--up-rose-soft);
 }
 
 .up-hiw-icon-box--green {
-  background: var(--up-success-soft);
-  color: var(--up-success);
+  background: var(--up-green-bg);
+  color: var(--up-green);
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
 }
 
 .up-hiw-step-title {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--up-text);
   margin-bottom: 12px;
 }
 
 .up-hiw-step-body {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
 }
 
 @media (max-width: 900px) {

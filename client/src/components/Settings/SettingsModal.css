@@ -90,7 +90,7 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7838F5, #A855F7);
+  background: linear-gradient(135deg, #7838F5, var(--up-accent));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,11 +114,11 @@
   gap: 6px;
   padding: 3px 10px;
   border-radius: 9999px;
-  background: rgba(34, 211, 238, 0.12);
-  color: #22D3EE;
+  background: rgba(245, 138, 187, 0.12);
+  color: var(--up-rose);
   font-size: 0.75rem;
   font-weight: 600;
-  border: 1px solid rgba(34, 211, 238, 0.3);
+  border: 1px solid rgba(245, 138, 187, 0.3);
 }
 
 /* Form Sections */
@@ -260,7 +260,7 @@ input:checked + .up-slider:before {
 }
 
 .up-btn-save {
-  background: linear-gradient(135deg, #7838F5 0%, #A855F7 100%);
+  background: linear-gradient(135deg, #7838F5 0%, var(--up-accent) 100%);
   color: #FFF;
   font-weight: 600;
   padding: 10px 22px;

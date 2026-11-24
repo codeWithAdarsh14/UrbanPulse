@@ -4,8 +4,8 @@
      bg:      #080B18
      card:    #11172B
      accent:  #7838F5
-     violet:  #A855F7
-     cyan:    #22D3EE
+     violet:  var(--up-accent)
+     cyan:    var(--up-rose)
      green:   #10B981
      red:     #EF4444
      text:    #F8FAFC
@@ -90,7 +90,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #A855F7;
+  color: var(--up-accent);
   flex-shrink: 0;
 }
 
@@ -170,8 +170,8 @@
 }
 
 .step-dot.active {
-  background: linear-gradient(135deg, #7838F5, #A855F7);
-  border-color: #A855F7;
+  background: linear-gradient(135deg, #7838F5, var(--up-accent));
+  border-color: var(--up-accent);
   color: #FFFFFF;
   box-shadow: 0 0 14px rgba(120, 56, 245, 0.6);
   transform: scale(1.12);
@@ -193,7 +193,7 @@
 }
 
 .step-line.step-line--active {
-  background: linear-gradient(90deg, #7838F5, #A855F7);
+  background: linear-gradient(90deg, #7838F5, var(--up-accent));
 }
 
 /* ── Step Content Animation ── */
@@ -335,7 +335,7 @@
 }
 
 .cat-card.selected {
-  background: linear-gradient(135deg, rgba(120, 56, 245, 0.28), rgba(168, 85, 247, 0.2));
+  background: linear-gradient(135deg, rgba(120, 56, 245, 0.28), rgba(232, 62, 150, 0.2));
   border-color: #7838F5;
   color: #F8FAFC;
   box-shadow: 0 0 20px rgba(120, 56, 245, 0.4), inset 0 0 12px rgba(120, 56, 245, 0.15);
@@ -345,12 +345,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #A855F7;
+  color: var(--up-accent);
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .cat-card.selected .cat-card-icon {
-  color: #22D3EE;
+  color: var(--up-rose);
   transform: scale(1.12);
 }
 
@@ -378,7 +378,7 @@
 
 .msrm-drop-zone:hover,
 .msrm-drop-zone.dragging {
-  border-color: #A855F7;
+  border-color: var(--up-accent);
   background: rgba(120, 56, 245, 0.12);
   box-shadow: 0 0 20px rgba(120, 56, 245, 0.25);
 }
@@ -390,7 +390,7 @@
 }
 
 .msrm-drop-icon {
-  color: #A855F7;
+  color: var(--up-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -582,7 +582,7 @@
   border-radius: 10px;
   border: 1px solid rgba(120, 56, 245, 0.4);
   background: rgba(120, 56, 245, 0.15);
-  color: #A855F7;
+  color: var(--up-accent);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -590,7 +590,7 @@
 
 .btn-detect-location:hover:not(:disabled) {
   background: rgba(120, 56, 245, 0.28);
-  border-color: #A855F7;
+  border-color: var(--up-accent);
   color: #F8FAFC;
   box-shadow: 0 0 16px rgba(120, 56, 245, 0.35);
 }
@@ -608,19 +608,19 @@
   font-size: 13px;
   font-weight: 600;
   border-radius: 10px;
-  border: 1px solid rgba(34, 211, 238, 0.4);
-  background: rgba(34, 211, 238, 0.12);
-  color: #22D3EE;
+  border: 1px solid rgba(245, 138, 187, 0.4);
+  background: rgba(245, 138, 187, 0.12);
+  color: var(--up-rose);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .btn-use-map-pin:hover:not(:disabled) {
-  background: rgba(34, 211, 238, 0.24);
-  border-color: #22D3EE;
+  background: rgba(245, 138, 187, 0.24);
+  border-color: var(--up-rose);
   color: #F8FAFC;
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 16px rgba(245, 138, 187, 0.35);
 }
 
 .btn-use-map-pin:disabled {
@@ -636,7 +636,7 @@
 }
 
 .msrm-location-hint--ready {
-  color: #22D3EE;
+  color: var(--up-rose);
 }
 
 .msrm-dev-notice {
@@ -692,7 +692,7 @@
   font-weight: 600;
   background: rgba(120, 56, 245, 0.2);
   border: 1px solid rgba(120, 56, 245, 0.4);
-  color: #A855F7;
+  color: var(--up-accent);
   width: fit-content;
 }
 
@@ -820,8 +820,8 @@
   padding: 10px 22px;
   font-size: 13.5px;
   font-weight: 600;
-  background: linear-gradient(135deg, #7838F5, #A855F7);
-  border: 1px solid rgba(168, 85, 247, 0.5);
+  background: linear-gradient(135deg, #7838F5, var(--up-accent));
+  border: 1px solid rgba(232, 62, 150, 0.5);
   color: #FFFFFF;
   border-radius: 10px;
   cursor: pointer;
@@ -852,8 +852,8 @@
   padding: 11px 26px;
   font-size: 14px;
   font-weight: 700;
-  background: linear-gradient(135deg, #7838F5, #A855F7);
-  border: 1px solid rgba(168, 85, 247, 0.6);
+  background: linear-gradient(135deg, #7838F5, var(--up-accent));
+  border: 1px solid rgba(232, 62, 150, 0.6);
   color: #FFFFFF;
   border-radius: 12px;
   cursor: pointer;

@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 50% 20%, rgba(124, 58, 237, 0.15) 0%, rgba(15, 23, 42, 0.98) 70%), #0A0F1D;
+  background: radial-gradient(circle at 50% 20%, rgba(232, 62, 150, 0.15) 0%, rgba(15, 23, 42, 0.98) 70%), #0A0F1D;
   backdrop-filter: blur(16px);
   padding: 20px;
   overflow-y: auto;
@@ -17,7 +17,7 @@
   max-width: 460px;
   background: rgba(15, 23, 42, 0.88);
   border: 1px solid rgba(148, 163, 184, 0.15);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(124, 58, 237, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(232, 62, 150, 0.15);
   border-radius: 20px;
   padding: 36px 32px;
   position: relative;
@@ -43,7 +43,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #7C3AED, #22D3EE, #10B981);
+  background: linear-gradient(90deg, var(--up-accent), var(--up-rose), #10B981);
 }
 
 .up-authgate-header {
@@ -55,9 +55,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(124, 58, 237, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  color: #C084FC;
+  background: rgba(232, 62, 150, 0.15);
+  border: 1px solid rgba(232, 62, 150, 0.35);
+  color: var(--up-accent);
   font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -71,8 +71,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #A855F7;
-  box-shadow: 0 0 10px #A855F7;
+  background: var(--up-accent);
+  box-shadow: 0 0 10px var(--up-accent);
   animation: upPulse 2s infinite;
 }
 
@@ -119,9 +119,9 @@
 }
 
 .up-authgate-tab.active {
-  background: #7C3AED;
+  background: var(--up-accent);
   color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 4px 12px rgba(232, 62, 150, 0.4);
 }
 
 /* Form inputs */
@@ -164,8 +164,8 @@
 }
 
 .up-authgate-input:focus {
-  border-color: #7C3AED;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+  border-color: var(--up-accent);
+  box-shadow: 0 0 0 3px rgba(232, 62, 150, 0.25);
 }
 
 .up-authgate-input::placeholder {
@@ -214,7 +214,7 @@
 .up-authgate-submit {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+  background: linear-gradient(135deg, var(--up-accent) 0%, #6D28D9 100%);
   color: #FFFFFF;
   border: none;
   border-radius: 10px;
@@ -225,15 +225,15 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 4px 14px rgba(232, 62, 150, 0.35);
   transition: all 0.2s ease;
   margin-top: 6px;
 }
 
 .up-authgate-submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  box-shadow: 0 6px 20px rgba(232, 62, 150, 0.5);
+  background: linear-gradient(135deg, var(--up-accent) 0%, var(--up-accent) 100%);
 }
 
 .up-authgate-submit:disabled {
@@ -264,9 +264,9 @@
 }
 
 .up-authgate-demo-btn {
-  background: rgba(34, 211, 238, 0.15);
-  border: 1px solid rgba(34, 211, 238, 0.3);
-  color: #22D3EE;
+  background: rgba(245, 138, 187, 0.15);
+  border: 1px solid rgba(245, 138, 187, 0.3);
+  color: var(--up-rose);
   font-size: 0.74rem;
   font-weight: 600;
   padding: 5px 10px;
@@ -277,8 +277,8 @@
 }
 
 .up-authgate-demo-btn:hover {
-  background: rgba(34, 211, 238, 0.25);
-  border-color: #22D3EE;
+  background: rgba(245, 138, 187, 0.25);
+  border-color: var(--up-rose);
 }
 
 /* External Portal link */
@@ -290,7 +290,7 @@
 }
 
 .up-authgate-portal-link a {
-  color: #22D3EE;
+  color: var(--up-rose);
   text-decoration: none;
   font-weight: 600;
 }

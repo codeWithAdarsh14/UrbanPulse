@@ -36,9 +36,11 @@
 }
 
 .up-stat-card {
-  background: var(--up-card);
+  background: var(--up-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--up-border);
-  border-radius: var(--up-radius-lg);
+  border-radius: var(--up-r-lg);
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
@@ -47,12 +49,13 @@
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--up-shadow-sm);
 }
 
 .up-stat-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(124, 58, 237, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(124, 58, 237, 0.15);
+  border-color: var(--up-accent-border);
+  box-shadow: var(--up-shadow-md), 0 0 15px var(--up-accent-soft);
 }
 
 .up-stat-card__glow {
@@ -61,19 +64,19 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--up-purple-primary), transparent);
+  background: linear-gradient(90deg, transparent, var(--up-accent), transparent);
 }
 
 .up-stat-card--cyan .up-stat-card__glow {
-  background: linear-gradient(90deg, transparent, var(--up-cyan-accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--up-rose), transparent);
 }
 
 .up-stat-card--green .up-stat-card__glow {
-  background: linear-gradient(90deg, transparent, var(--up-success), transparent);
+  background: linear-gradient(90deg, transparent, var(--up-green), transparent);
 }
 
 .up-stat-card--amber .up-stat-card__glow {
-  background: linear-gradient(90deg, transparent, var(--up-warning), transparent);
+  background: linear-gradient(90deg, transparent, var(--up-amber), transparent);
 }
 
 .up-stat-icon-wrap {
@@ -91,13 +94,13 @@
   font-size: 2.2rem;
   font-weight: 800;
   font-family: var(--up-font-mono);
-  color: #FFFFFF;
+  color: var(--up-text);
   line-height: 1.1;
   margin-bottom: 6px;
 }
 
-.up-stat-card--purple .up-stat-val { color: #C084FC; }
-.up-stat-card--cyan .up-stat-val { color: var(--up-cyan-accent); }
+.up-stat-card--purple .up-stat-val { color: var(--up-accent); }
+.up-stat-card--cyan .up-stat-val { color: var(--up-rose); }
 .up-stat-card--green .up-stat-val { color: var(--up-success); }
 .up-stat-card--amber .up-stat-val { color: var(--up-warning); }
 

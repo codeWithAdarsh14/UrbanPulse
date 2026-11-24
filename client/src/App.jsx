@@ -103,8 +103,8 @@ function UrbanPulseRouter() {
             <div style={{
               width: '38px',
               height: '38px',
-              border: '3px solid rgba(198,40,82,0.2)',
-              borderTopColor: '#C62852',
+              border: '3px solid var(--up-accent-soft)',
+              borderTopColor: 'var(--up-accent)',
               borderRadius: '50%',
               animation: 'upSpin 1s linear infinite',
               margin: '0 auto 16px'

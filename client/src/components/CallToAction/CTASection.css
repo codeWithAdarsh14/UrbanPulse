@@ -6,14 +6,16 @@
 }
 
 .up-cta-card {
-  background: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.25) 0%, rgba(17, 23, 43, 0.95) 75%),
+  background: radial-gradient(circle at 50% 0%, var(--up-accent-soft) 0%, var(--up-glass-card) 75%),
               var(--up-card);
-  border: 1px solid rgba(124, 58, 237, 0.35);
-  border-radius: var(--up-radius-2xl, 24px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--up-accent-border);
+  border-radius: var(--up-r-2xl);
   padding: 64px 40px;
   text-align: center;
   position: relative;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(124, 58, 237, 0.2);
+  box-shadow: var(--up-shadow-lg);
 }
 
 .up-cta-card::before {
@@ -23,7 +25,7 @@
   left: 20%;
   right: 20%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--up-cyan-accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--up-accent), transparent);
 }
 
 .up-cta-badge {
@@ -35,11 +37,12 @@
   font-weight: 800;
   letter-spacing: -1px;
   margin-bottom: 16px;
+  color: var(--up-text);
 }
 
 .up-cta-desc {
   font-size: 1.15rem;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
   max-width: 580px;
   margin: 0 auto 32px;
 }
