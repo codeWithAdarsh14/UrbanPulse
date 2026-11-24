@@ -12,7 +12,23 @@ const DB_STATES = {
   3: 'disconnecting',
   99: 'uninitialized'
 };
-
+/**
+ * Checks the operational status of the UrbanPulse API.
+ *
+ * Retrieves the current MongoDB connection state and returns
+ * server health information in JSON format.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {void} Sends an HTTP 200 JSON response containing:
+ *   - status: API operational status.
+ *   - message: Descriptive health-check message.
+ *   - timestamp: Current server time in ISO 8601 format.
+ *   - uptime: Server uptime in seconds.
+ *   - database.status: Human-readable database connection state.
+ *   - database.ready: Whether the database is connected.
+ */
 const getHealth = (req, res) => {
   const dbState = mongoose.connection.readyState;
 
