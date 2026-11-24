@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './DashboardView.css';
+import heroDarkCity from '../../assets/hero-dark-city.jpg';
 
 /**
  * Animated number counter component
@@ -301,160 +302,13 @@ export default function DashboardView({
           </div>
         </div>
 
-        {/* Right side: Stylized Mathura City Skyline Illustration (Pure SVG) */}
+        {/* Right side: City Skyline Illustration */}
         <div className="hero-illustration" aria-hidden="true">
-          <svg
-            className="mathura-skyline-svg"
-            viewBox="0 0 380 220"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1E1338" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="var(--up-bg)" stopOpacity="0.2" />
-              </linearGradient>
-              <linearGradient id="purpleTone" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#C62852" stopOpacity="0.2" />
-              </linearGradient>
-              <linearGradient id="cyanTone" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#2563EB" stopOpacity="0.3" />
-              </linearGradient>
-              <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--up-surface)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="var(--up-bg)" stopOpacity="0.9" />
-              </linearGradient>
-              <linearGradient id="domeGlow" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#F7A6B7" stopOpacity="0.9" />
-                <stop offset="50%" stopColor="#F7A6B7" stopOpacity="0.7" />
-                <stop offset="100%" stopColor="#C62852" stopOpacity="0.4" />
-              </linearGradient>
-              <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            {/* Background Sky & Ambient Stars */}
-            <rect width="380" height="220" rx="16" fill="url(#skyGrad)" />
-            <circle cx="295" cy="45" r="3" fill="#F7A6B7" opacity="0.6" />
-            <circle cx="240" cy="30" r="2" fill="#F7A6B7" opacity="0.7" />
-            <circle cx="160" cy="40" r="1.5" fill="#F8FAFC" opacity="0.4" />
-            <circle cx="90" cy="55" r="2" fill="#F7A6B7" opacity="0.5" />
-            <circle cx="340" cy="70" r="1.5" fill="#F8FAFC" opacity="0.5" />
-
-            {/* Stylized Crescent Moon */}
-            <path
-              d="M315 28C310 32 308 40 312 47C316 54 324 57 331 54C322 62 306 58 301 47C297 36 304 26 315 28Z"
-              fill="#F7A6B7"
-              opacity="0.85"
-              filter="url(#glowFilter)"
-            />
-
-            {/* Back Silhouette Layer — Distant Temples & Civic Towers */}
-            <path
-              d="M20 180V120H35V105L45 80L55 105V120H75V135H95V110L105 95L115 110V135H140V125H160V140H185V115L195 90L205 115V140H230V118H255V140H280V105L295 75L310 105V140H340V125H365V180H20Z"
-              fill="rgba(120,56,245,0.22)"
-            />
-
-            {/* Mid Silhouette Layer — Mathura Ghats, Shikharas, Chhatri Domes */}
-            {/* Temple 1 (Left Shikhara with Kalash flag) */}
-            <path
-              d="M48 180V110H56L68 60L80 110H88V180H48Z"
-              fill="rgba(168,85,247,0.35)"
-              stroke="#F7A6B7"
-              strokeWidth="0.75"
-            />
-            <line x1="68" y1="60" x2="68" y2="48" stroke="#F7A6B7" strokeWidth="1.5" />
-            <path d="M68 48L78 52L68 56Z" fill="#F59E0B" />
-
-            {/* Pavilion Chhatri Dome (Mathura Yamuna ghat architecture) */}
-            <path
-              d="M98 180V130H106C106 130 112 108 126 108C140 108 146 130 146 130H154V180H98Z"
-              fill="rgba(120,56,245,0.4)"
-              stroke="url(#domeGlow)"
-              strokeWidth="1"
-            />
-            <path d="M114 145H138V180H114V145Z" fill="#0C1024" opacity="0.6" />
-            {/* Pillars */}
-            <line x1="108" y1="130" x2="108" y2="180" stroke="#C62852" strokeWidth="2" />
-            <line x1="144" y1="130" x2="144" y2="180" stroke="#C62852" strokeWidth="2" />
-
-            {/* Grand Main Shikhara (Krishna Janmabhoomi motif) */}
-            <path
-              d="M175 180V105H185C185 105 196 68 205 52C214 68 225 105 225 105H235V180H175Z"
-              fill="rgba(168,85,247,0.4)"
-              stroke="#F7A6B7"
-              strokeWidth="1"
-            />
-            <line x1="205" y1="52" x2="205" y2="38" stroke="#F7A6B7" strokeWidth="2" />
-            <path d="M205 38L218 43L205 48Z" fill="#F59E0B" />
-            <circle cx="205" cy="52" r="3" fill="#F7A6B7" />
-
-            {/* Right Chhatri Pavilion */}
-            <path
-              d="M255 180V128H263C263 128 270 112 282 112C294 112 301 128 301 128H309V180H255Z"
-              fill="rgba(120,56,245,0.45)"
-              stroke="#F7A6B7"
-              strokeWidth="1"
-            />
-            {/* Small spire on right */}
-            <path d="M320 180V125L335 95L350 125V180H320Z" fill="rgba(34,211,238,0.25)" />
-
-            {/* Front Foreground — Yamuna Riverbank Ghat Steps */}
-            <path
-              d="M10 180H370V186H10V180ZM18 186H362V192H18V186ZM26 192H354V198H26V192ZM34 198H346V204H34V198Z"
-              fill="var(--up-surface)"
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth="0.5"
-            />
-
-            {/* Yamuna Water Layer */}
-            <rect x="0" y="200" width="380" height="20" fill="url(#waterGrad)" />
-            {/* Water reflections and ripples */}
-            <line
-              x1="50"
-              y1="206"
-              x2="110"
-              y2="206"
-              stroke="#F7A6B7"
-              strokeWidth="1.5"
-              opacity="0.6"
-              strokeLinecap="round"
-            />
-            <line
-              x1="160"
-              y1="209"
-              x2="250"
-              y2="209"
-              stroke="#F7A6B7"
-              strokeWidth="1.5"
-              opacity="0.5"
-              strokeLinecap="round"
-            />
-            <line
-              x1="270"
-              y1="205"
-              x2="330"
-              y2="205"
-              stroke="#F7A6B7"
-              strokeWidth="1.5"
-              opacity="0.4"
-              strokeLinecap="round"
-            />
-
-            {/* Floating River Diyas (Ghat Lamps) */}
-            <circle cx="130" cy="207" r="2.5" fill="#F59E0B" filter="url(#glowFilter)" />
-            <circle cx="215" cy="210" r="2" fill="#F59E0B" filter="url(#glowFilter)" />
-
-            {/* Smart Civic Streetlights (IoT/Tech accent) */}
-            <line x1="88" y1="180" x2="88" y2="152" stroke="#94A3B8" strokeWidth="1.5" />
-            <circle cx="88" cy="152" r="3" fill="#F7A6B7" filter="url(#glowFilter)" />
-            <line x1="242" y1="180" x2="242" y2="152" stroke="#94A3B8" strokeWidth="1.5" />
-            <circle cx="242" cy="152" r="3" fill="#F7A6B7" filter="url(#glowFilter)" />
-          </svg>
+          <img
+            src={heroDarkCity}
+            alt="UrbanPulse City Skyline"
+            className="hero-illustration-img"
+          />
         </div>
       </section>
 
@@ -462,7 +316,7 @@ export default function DashboardView({
       <section className="stats-row" aria-label="Key Platform Metrics">
         {/* Card 1: Total Reports (Purple) */}
         <div className="stat-card stat-card--purple">
-          <div className="stat-accent-bar" style={{ background: 'var(--dash-purple, #C62852)' }} />
+          <div className="stat-accent-bar" style={{ background: 'var(--up-accent)' }} />
           <div className="stat-header">
             <span className="stat-icon-wrap stat-icon-wrap--purple">
               <svg
@@ -552,7 +406,7 @@ export default function DashboardView({
 
         {/* Card 4: Community Events (Cyan) */}
         <div className="stat-card stat-card--cyan">
-          <div className="stat-accent-bar" style={{ background: 'var(--dash-cyan, #F7A6B7)' }} />
+          <div className="stat-accent-bar" style={{ background: 'var(--up-rose)' }} />
           <div className="stat-header">
             <span className="stat-icon-wrap stat-icon-wrap--cyan">
               <svg
@@ -686,7 +540,7 @@ export default function DashboardView({
                         height="16"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#F7A6B7"
+                        stroke="var(--up-accent)"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"

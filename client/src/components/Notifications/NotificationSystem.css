@@ -65,7 +65,7 @@
 }
 
 .up-toast--info .up-toast__icon {
-  color: #A855F7;
+  color: var(--up-accent);
   background: rgba(120, 56, 245, 0.15);
 }
 

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { getRateLimitStatus } from '../../utils/security';
 import { DASHBOARD_URL } from '../../config/constants';
 import Modal from '../../components/Common/Modal';
 import './LoginPage.css';
+import urbanpulseFullLogo from '../../assets/urbanpulse-full-logo.png';
+import urbanpulseFullLogoLight from '../../assets/urbanpulse-full-logo-light.png';
 
 export default function LoginPage({ onNavigate }) {
   const { login } = useAuth();
+  const { theme } = useTheme();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -92,11 +96,11 @@ export default function LoginPage({ onNavigate }) {
         {/* Header */}
         <div className="up-auth-header">
           <div className="up-auth-logo-wrap" onClick={() => onNavigate('home')} style={{ cursor: 'pointer' }}>
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-              <rect x="3" y="14" width="5" height="15" rx="1" fill="#C62852" />
-              <rect x="10" y="6" width="6" height="23" rx="1.5" fill="#F7A6B7" />
-              <rect x="18" y="11" width="5" height="18" rx="1" fill="#C62852" />
-            </svg>
+            <img
+              src={theme === 'light' ? urbanpulseFullLogoLight : urbanpulseFullLogo}
+              alt="UrbanPulse — Report • Track • Improve"
+              className="up-auth-logo-img"
+            />
           </div>
           <h2 className="up-auth-title">Welcome Back</h2>
           <p className="up-auth-sub">Sign in to your UrbanPulse citizen portal</p>

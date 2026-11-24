@@ -38,7 +38,7 @@
   gap: 8px;
   background: var(--up-card);
   padding: 4px;
-  border-radius: var(--up-radius-md);
+  border-radius: var(--up-r-md);
   border: 1px solid var(--up-border);
 }
 
@@ -46,19 +46,19 @@
   padding: 8px 16px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--up-text-secondary);
-  border-radius: var(--up-radius-sm);
+  color: var(--up-text-2);
+  border-radius: var(--up-r-sm);
   transition: all 0.2s ease;
 }
 
 .up-filter-tab:hover {
-  color: #FFF;
+  color: var(--up-text);
 }
 
 .up-filter-tab.active {
-  background: var(--up-purple-primary);
+  background: var(--up-accent);
   color: #FFF;
-  box-shadow: 0 2px 10px var(--up-purple-glow);
+  box-shadow: 0 2px 10px var(--up-glow);
 }
 
 /* Cards Grid */
@@ -69,20 +69,23 @@
 }
 
 .up-issue-card {
-  background: var(--up-card);
+  background: var(--up-glass-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--up-border);
-  border-radius: var(--up-radius-lg);
+  border-radius: var(--up-r-lg);
   padding: 22px;
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
   position: relative;
+  box-shadow: var(--up-shadow-sm);
 }
 
 .up-issue-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(124, 58, 237, 0.4);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  border-color: var(--up-accent-border);
+  box-shadow: var(--up-shadow-md), 0 0 20px var(--up-accent-soft);
 }
 
 .up-issue-top {
@@ -95,14 +98,14 @@
 .up-issue-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--up-text);
   margin-bottom: 8px;
   line-height: 1.35;
 }
 
 .up-issue-desc {
   font-size: 0.88rem;
-  color: var(--up-text-secondary);
+  color: var(--up-text-2);
   line-height: 1.5;
   margin-bottom: 16px;
   flex: 1;

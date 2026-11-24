@@ -1,6 +1,6 @@
 /* ============================================================
    UrbanPulse — Landing Page Design System & Shared Tokens
-   Rose Crimson theme — reuses global CSS variables from index.css
+   Reuses global CSS variables from index.css
    ============================================================ */
 
 /* Layout container */
@@ -32,7 +32,7 @@
 .up-badge--cyan {
   background: var(--up-rose-soft);
   color: var(--up-accent);
-  border: 1px solid rgba(198, 40, 82, 0.25);
+  border: 1px solid var(--up-accent-border);
 }
 
 .up-badge--green {
@@ -84,7 +84,7 @@
 }
 
 .up-text-gradient-purple {
-  background: linear-gradient(135deg, var(--up-rose) 0%, var(--up-accent) 60%, #8B1A35 100%);
+  background: linear-gradient(135deg, var(--up-accent) 0%, var(--up-pink-hot) 60%, var(--up-rose) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,14 +108,14 @@
 }
 
 .up-btn--primary {
-  background: linear-gradient(135deg, var(--up-accent) 0%, #D63060 100%);
+  background: linear-gradient(135deg, var(--up-accent) 0%, var(--up-pink-hot) 100%);
   color: #FFFFFF;
-  box-shadow: 0 4px 16px var(--up-purple-glow);
+  box-shadow: 0 4px 18px var(--up-glow);
 }
 
 .up-btn--primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(198, 40, 82, 0.5);
+  box-shadow: 0 6px 26px var(--up-glow);
   filter: brightness(1.08);
 }
 
@@ -132,15 +132,15 @@
 }
 
 .up-btn--cyan {
-  background: linear-gradient(135deg, var(--up-accent) 0%, #E83A6A 100%);
+  background: linear-gradient(135deg, var(--up-pink-hot) 0%, var(--up-accent) 100%);
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 4px 18px var(--up-purple-glow);
+  box-shadow: 0 4px 18px var(--up-glow);
 }
 
 .up-btn--cyan:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 26px rgba(198, 40, 82, 0.5);
+  box-shadow: 0 6px 26px var(--up-glow);
 }
 
 .up-btn--ghost {
@@ -164,7 +164,7 @@
   width: 100%;
   background: var(--up-surface);
   border: 1px solid var(--up-border-2);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 11px 14px;
   color: var(--up-text);
   font-size: 0.9rem;
@@ -183,4 +183,5 @@
   color: var(--up-text);
   min-height: 100vh;
   transition: background-color 0.25s ease, color 0.25s ease;
+  position: relative;
 }

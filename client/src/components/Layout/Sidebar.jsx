@@ -1,5 +1,9 @@
 import React from 'react';
+import { useTheme } from '../../context/ThemeContext';
 import './Sidebar.css';
+import urbanpulseFullLogo from '../../assets/urbanpulse-full-logo.png';
+import urbanpulseFullLogoLight from '../../assets/urbanpulse-full-logo-light.png';
+import urbanpulseEmblem from '../../assets/urbanpulse-emblem.png';
 
 const NAV_ITEMS = [
   {
@@ -74,6 +78,7 @@ export default function Sidebar({
   onOpenSettings,
   onLogout,
 }) {
+  const { theme } = useTheme();
   const handleNavClick = (item) => {
     if (item.id === 'report') {
       if (onReportClick) {
@@ -99,27 +104,23 @@ export default function Sidebar({
     <aside className={`up-sidebar ${collapsed ? 'collapsed' : ''}`} aria-label="Main Navigation">
       {/* ── Logo Area ── */}
       <div className="up-sidebar-logo-area">
-        <div className="up-sidebar-logo-icon" title="UrbanPulse">
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="up-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#C62852" />
-                <stop offset="100%" stopColor="#F7A6B7" />
-              </linearGradient>
-            </defs>
-            <rect x="3" y="14" width="5" height="15" rx="1" fill="url(#up-logo-grad)" fillOpacity="0.75" />
-            <rect x="10" y="6" width="6" height="23" rx="1.5" fill="url(#up-logo-grad)" />
-            <rect x="18" y="11" width="5" height="18" rx="1" fill="url(#up-logo-grad)" fillOpacity="0.85" />
-            <rect x="25" y="16" width="4" height="13" rx="1" fill="url(#up-logo-grad)" fillOpacity="0.7" />
-            <circle cx="13" cy="10" r="1" fill="#FFFFFF" />
-            <circle cx="13" cy="14" r="1" fill="#FFFFFF" />
-            <circle cx="20.5" cy="15" r="1" fill="#FFFFFF" />
-          </svg>
-        </div>
-        {!collapsed && (
-          <div className="up-sidebar-brand-text">
-            <span className="up-sidebar-brand-name">UrbanPulse</span>
-            <span className="up-sidebar-brand-tagline">Report • Track • Improve</span>
+        {collapsed ? (
+          <div className="up-sidebar-logo-icon" title="UrbanPulse — Report • Track • Improve">
+            <img
+              src={urbanpulseEmblem}
+              alt="UrbanPulse"
+              className="up-sidebar-emblem-img"
+              width="28"
+              height="28"
+            />
+          </div>
+        ) : (
+          <div className="up-sidebar-brand-wrapper">
+            <img
+              src={theme === 'light' ? urbanpulseFullLogoLight : urbanpulseFullLogo}
+              alt="UrbanPulse — Report • Track • Improve"
+              className="up-sidebar-full-logo-img"
+            />
           </div>
         )}
       </div>
