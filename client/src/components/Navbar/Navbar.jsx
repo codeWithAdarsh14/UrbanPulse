@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { request } from '../../services/api';
 import { DASHBOARD_URL } from '../../config/constants';
 import ThemeToggle from '../Layout/ThemeToggle';
 import './Navbar.css';
+import urbanpulseFullLogo from '../../assets/urbanpulse-full-logo.png';
+import urbanpulseFullLogoLight from '../../assets/urbanpulse-full-logo-light.png';
 
 export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginModal }) {
   const { user, isAuthenticated, logout } = useAuth();
+  const { theme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [serverStatus, setServerStatus] = useState('checking'); // 'ok' | 'down' | 'checking'
@@ -53,27 +57,11 @@ export default function Navbar({ onNavigate, activePage = 'home', onOpenLoginMod
       <div className="up-container up-navbar">
         {/* Brand Logo */}
         <div className="up-brand" onClick={() => handleNav('home')}>
-          <div className="up-brand-logo">
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="up-nav-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#C62852" />
-                  <stop offset="100%" stopColor="#F7A6B7" />
-                </linearGradient>
-              </defs>
-              <rect x="3" y="14" width="5" height="15" rx="1" fill="url(#up-nav-logo-grad)" fillOpacity="0.8" />
-              <rect x="10" y="6" width="6" height="23" rx="1.5" fill="url(#up-nav-logo-grad)" />
-              <rect x="18" y="11" width="5" height="18" rx="1" fill="url(#up-nav-logo-grad)" fillOpacity="0.9" />
-              <rect x="25" y="16" width="4" height="13" rx="1" fill="url(#up-nav-logo-grad)" fillOpacity="0.75" />
-              <circle cx="13" cy="10" r="1.2" fill="#FFFFFF" />
-              <circle cx="13" cy="14" r="1.2" fill="#FFFFFF" />
-              <circle cx="20.5" cy="15" r="1.2" fill="#FFFFFF" />
-            </svg>
-          </div>
-          <div className="up-brand-text">
-            <span className="up-brand-name">UrbanPulse</span>
-            <span className="up-brand-tagline">Civic Intelligence</span>
-          </div>
+          <img
+            src={theme === 'light' ? urbanpulseFullLogoLight : urbanpulseFullLogo}
+            alt="UrbanPulse — Report • Track • Improve"
+            className="up-navbar-logo-img"
+          />
         </div>
 
         {/* Center Nav Links */}
